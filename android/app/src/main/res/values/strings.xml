@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Flutter Movie Booking App</string>
+    <string name="facebook_app_id">469989244676539</string>
+    <string name="fb_login_protocol_scheme">fb469989244676539</string>
+    <string name="facebook_client_token">957d96a7f442c4678b1543fb8623005a</string>
+</resources>
