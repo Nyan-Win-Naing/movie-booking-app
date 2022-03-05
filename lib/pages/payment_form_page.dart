@@ -81,14 +81,6 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
                   () {
                     print("Tap Tap");
                     _movieModel
-                        .getProfileFromDatabase("${widget.userVo?.token}")
-                        .listen((userVo) {
-                      print("It works......");
-                    }).onError((error) {
-                      debugPrint(error.toString());
-                    });
-
-                    _movieModel
                         .postCreateCard(
                             "${widget.userVo?.token}",
                             cNumberController.text,
@@ -97,10 +89,19 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
                             cCvcController.text)
                         .then((cardList) {
                       showAlertDialog(context, "Account Create Successfully");
+
+                      _movieModel
+                          .getProfileFromDatabase("${widget.userVo?.token}")
+                          .listen((userVo) {
+                        print("It works......");
+                      }).onError((error) {
+                        debugPrint(error.toString());
+                      });
                     }).catchError((error) {
                       debugPrint(error.toString());
                     });
-                  },
+
+                                      },
                 ),
               ),
             ],

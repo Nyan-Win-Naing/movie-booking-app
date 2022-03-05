@@ -79,12 +79,16 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  void getMovieDetails(int movieId) {
+  void getMovieDetails(int movieId, bool isNowPlaying) {
     // return _dataAgent.getMovieDetails(movieId).then((movie) async {
     //   mMovieDao.saveSingleMovie(movie);
     //   return Future.value(movie);
     // });
     _dataAgent.getMovieDetails(movieId).then((movie) async {
+      if(isNowPlaying == true)
+        movie?.isNowPlaying = true;
+      else
+        movie?.isUpComing = true;
       mMovieDao.saveSingleMovie(movie);
       // return Future.value(movie);
     });
@@ -227,8 +231,8 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Stream<MovieVO?> getMovieDetailsFromDatabase(int movieId) {
-    this.getMovieDetails(movieId);
+  Stream<MovieVO?> getMovieDetailsFromDatabase(int movieId, {bool isNowPlaying = false}) {
+    this.getMovieDetails(movieId, isNowPlaying);
     // return Future.value(mMovieDao.getMovieById(movieId));
     return mMovieDao
         .getAllMovieEventStream()
@@ -252,7 +256,7 @@ class MovieModelImpl extends MovieModel {
   @override
   Stream<List<CinemaVO>?> getCinemasFromDatabase(
       String token, String movieId, String date) {
-    this.getCinemas(getBearerToken(token), movieId, date);
+    getCinemas(getBearerToken(token), movieId, date);
     // return Future.value(mCinemaDao.getCinema(date)?.cinemaList);
     return mCinemaDao
         .getCinemasEventStream()

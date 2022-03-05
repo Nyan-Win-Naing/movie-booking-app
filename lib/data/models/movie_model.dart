@@ -18,7 +18,7 @@ abstract class MovieModel {
   void getUpcomingMovies();
   Future<List<GenreVO>?> getGenres();
   // Future<MovieVO?> getMovieDetails(int movieId);
-  void getMovieDetails(int movieId);
+  void getMovieDetails(int movieId, bool isNowPlaying);
   Future<List<List<ActorVO>?>> getCreditsByMovie(int movieId);
   void getCinemas(String token, String movieId, String movieDate);
   Future<List<CinemaSeatVO>?> getCinemaSeats(
@@ -45,7 +45,7 @@ abstract class MovieModel {
   // Database
   Stream<List<MovieVO>> getNowPlayingFromDatabase();
   Stream<List<MovieVO>> getUpcomingMoviesFromDatabase();
-  Stream<MovieVO?> getMovieDetailsFromDatabase(int movieId);
+  Stream<MovieVO?> getMovieDetailsFromDatabase(int movieId, {bool isNowPlaying = false});
   Stream<List<SnackVO>> getSnacksFromDatabase(String token);
   Stream<List<CinemaVO>?> getCinemasFromDatabase(
       String token, String movieId, String date);

@@ -6,6 +6,7 @@ import 'package:movie_booking_app/data/vos/movie_vo.dart';
 import 'package:movie_booking_app/data/vos/user_vo.dart';
 import 'package:movie_booking_app/network/api_constants.dart';
 import 'package:movie_booking_app/pages/movie_choose_time_page.dart';
+import 'package:movie_booking_app/persistence/daos/movie_dao.dart';
 import 'package:movie_booking_app/resources/colors.dart';
 import 'package:movie_booking_app/resources/dimens.dart';
 import 'package:movie_booking_app/resources/strings.dart';
@@ -15,11 +16,15 @@ import 'package:movie_booking_app/widgets/rating_view.dart';
 import 'package:movie_booking_app/widgets/title_text.dart';
 
 class MovieDetailsPage extends StatefulWidget {
-
   final int movieId;
   final UserVO? userVo;
+  final bool isNowPlaying;
 
-  MovieDetailsPage({required this.movieId, required this.userVo});
+  MovieDetailsPage({
+    required this.movieId,
+    required this.userVo,
+    required this.isNowPlaying,
+  });
 
   @override
   State<MovieDetailsPage> createState() => _MovieDetailsPageState();
@@ -39,7 +44,6 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
 
   @override
   void initState() {
-
     /// Movie Details
     // _movieModel.getMovieDetails(widget.movieId).then((movieDetails) {
     //   setState(() {
@@ -50,8 +54,10 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     // });
 
     /// Movie Details Database
-    _movieModel.getMovieDetailsFromDatabase(widget.movieId).listen((movieDetails) {
-      if(mounted) {
+    _movieModel
+        .getMovieDetailsFromDatabase(widget.movieId, isNowPlaying: widget.isNowPlaying)
+        .listen((movieDetails) {
+      if (mounted) {
         setState(() {
           this.movieDetails = movieDetails;
         });
@@ -61,7 +67,7 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
     });
 
     _movieModel.getCreditsByMovie(widget.movieId).then((castAndCrew) {
-      if(mounted) {
+      if (mounted) {
         setState(() {
           cast = castAndCrew.first ?? [];
           crew = castAndCrew[1] ?? [];
@@ -77,7 +83,6 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -95,21 +100,24 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                       Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: MARGIN_MEDIUM_2),
-                        child:
-                            MovieTimeRatingAndGenreView(movie: movieDetails,),
+                        child: MovieTimeRatingAndGenreView(
+                          movie: movieDetails,
+                        ),
                       ),
                       const SizedBox(height: MARGIN_MEDIUM_3),
                       Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: MARGIN_MEDIUM_2),
-                        child: MoviePlotView(plotSummary: movieDetails?.overview ?? ""),
+                        child: MoviePlotView(
+                            plotSummary: movieDetails?.overview ?? ""),
                       ),
                       const SizedBox(height: MARGIN_MEDIUM_3),
                       Container(
-                        child: CastSectionView(credits: credits ?? [],),
+                        child: CastSectionView(
+                          credits: credits ?? [],
+                        ),
                       ),
                       const SizedBox(height: MARGIN_XXLARGE + 30),
-
                     ],
                   ),
                 ),
@@ -126,7 +134,8 @@ class _MovieDetailsPageState extends State<MovieDetailsPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MovieChooseTimePage(userVo: widget.userVo, movieId: widget.movieId),
+                        builder: (context) => MovieChooseTimePage(
+                            userVo: widget.userVo, movieId: widget.movieId),
                       ),
                     );
                   },
@@ -162,7 +171,9 @@ class CastSectionView extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: credits.length,
             itemBuilder: (BuildContext context, int index) {
-              return MovieDetailsCastView(credit: credits[index],);
+              return MovieDetailsCastView(
+                credit: credits[index],
+              );
             },
           ),
         ),
@@ -172,9 +183,7 @@ class CastSectionView extends StatelessWidget {
 }
 
 class MoviePlotView extends StatelessWidget {
-
   final String plotSummary;
-
 
   MoviePlotView({required this.plotSummary});
 
@@ -210,9 +219,13 @@ class MovieTimeRatingAndGenreView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MovieTitleView(title: movie?.title ?? "",),
+        MovieTitleView(
+          title: movie?.title ?? "",
+        ),
         const SizedBox(height: MARGIN_MEDIUM_2),
-        MovieTimeAndRatingView(rating: movie?.voteAverage ?? 0,),
+        MovieTimeAndRatingView(
+          rating: movie?.voteAverage ?? 0,
+        ),
         const SizedBox(height: MARGIN_MEDIUM_2),
         Wrap(
           alignment: WrapAlignment.start,
@@ -269,7 +282,6 @@ class GenreChipView extends StatelessWidget {
 }
 
 class MovieTimeAndRatingView extends StatelessWidget {
-
   final double rating;
 
   MovieTimeAndRatingView({required this.rating});
@@ -301,7 +313,6 @@ class MovieTimeAndRatingView extends StatelessWidget {
 }
 
 class MovieTitleView extends StatelessWidget {
-
   final String title;
 
   MovieTitleView({required this.title});
@@ -359,7 +370,6 @@ class MovieDetailsSliverAppBarView extends StatelessWidget {
               ],
             ),
           ),
-
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -415,16 +425,17 @@ class PlayButtonIconView extends StatelessWidget {
 }
 
 class MovieDetailsAppBarImageView extends StatelessWidget {
-
   String imageUrl;
 
   MovieDetailsAppBarImageView({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
-    return imageUrl.isNotEmpty ? Image.network(
-      "$IMAGE_BASE_URL$imageUrl",
-      fit: BoxFit.cover,
-    ) : CircularProgressIndicator();
+    return imageUrl.isNotEmpty
+        ? Image.network(
+            "$IMAGE_BASE_URL$imageUrl",
+            fit: BoxFit.cover,
+          )
+        : CircularProgressIndicator();
   }
 }

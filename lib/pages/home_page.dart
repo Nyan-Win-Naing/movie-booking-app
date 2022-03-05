@@ -240,14 +240,14 @@ class _HomePageState extends State<HomePage> {
               MovieListSectionView(
                 title: HOME_PAGE_NOW_SHOWING_TITLE,
                 onTapMovie: (movieId) =>
-                    _navigateToMovieDetailsScreen(context, movieId, userVo),
+                    _navigateToMovieDetailsScreen(context, movieId, userVo, true),
                 movies: getNowPlayingMovies,
               ),
               const SizedBox(height: MARGIN_MEDIUM_2),
               MovieListSectionView(
                 title: HOME_PAGE_COMING_SOON_TITLE,
                 onTapMovie: (movieId) =>
-                    _navigateToMovieDetailsScreen(context, movieId, userVo),
+                    _navigateToMovieDetailsScreen(context, movieId, userVo, false),
                 movies: getUpcomingMovies,
               ),
             ],
@@ -258,7 +258,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _navigateToMovieDetailsScreen(
-      BuildContext context, int? movieId, UserVO? userVo) {
+      BuildContext context, int? movieId, UserVO? userVo, bool isNowPlaying) {
     if (movieId != null) {
       Navigator.push(
         context,
@@ -266,9 +266,14 @@ class _HomePageState extends State<HomePage> {
           builder: (context) => MovieDetailsPage(
             movieId: movieId,
             userVo: userVo,
+            isNowPlaying: isNowPlaying,
           ),
         ),
       );
+      //     .then((value) {
+      //   movieModel.getNowPlayingMovies();
+      //   movieModel.getUpcomingMovies();
+      // });
     }
   }
 }
@@ -419,8 +424,8 @@ class HiSectionView extends StatelessWidget {
           CircleAvatar(
             radius: avatarRadius,
             // backgroundImage: const AssetImage("assets/lily.jpg"),
-            backgroundImage: NetworkImage(
-                "https://cdn-icons-png.flaticon.com/512/149/149071.png"),
+            backgroundImage: const NetworkImage(
+                "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"),
           ),
           const SizedBox(width: MARGIN_LARGE),
           Text(
