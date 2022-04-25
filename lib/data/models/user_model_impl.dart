@@ -17,6 +17,11 @@ class UserModelImpl extends UserModel {
 
   MovieDataAgent _dataAgent = RetrofitDataAgentImpl();
 
+  /// Get Bearer Token String
+  String getBearerToken(String token) {
+    return "Bearer $token";
+  }
+
   /// Daos
   UserDao userDao = UserDao();
 
@@ -70,7 +75,7 @@ class UserModelImpl extends UserModel {
 
   @override
   Future<LogoutVO?> postLogout(String? token) {
-    return _dataAgent.postLogout(token ?? "");
+    return _dataAgent.postLogout(getBearerToken(token ?? ""));
   }
 
   /// Database
