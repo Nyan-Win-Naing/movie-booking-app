@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:movie_booking_app/blocs/authentication_bloc.dart';
 import 'package:movie_booking_app/data/models/user_model.dart';
 import 'package:movie_booking_app/data/models/user_model_impl.dart';
 import 'package:movie_booking_app/data/vos/user_vo.dart';
@@ -13,42 +14,14 @@ import 'package:movie_booking_app/widgets/common_button_view.dart';
 import 'package:movie_booking_app/widgets/form_style_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:provider/provider.dart';
 
 class AuthenticationPage extends StatefulWidget {
   @override
-
   State<AuthenticationPage> createState() => _AuthenticationPageState();
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
-  UserModel userModel = UserModelImpl();
-
-  /// State Variables
-  UserVO? userVo;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  // void userLogin() {
-  //   userModel.postUserLogin(email, password).then((userVo) {
-  //     setState(() {
-  //       this.userVo = userVo;
-  //     });
-  //   }).catchError((error) {
-  //     debugPrint(error.toString());
-  //   });
-  // }
-
-  // void userRegistration() {
-  //   userModel.postUserRegistration(name, email, phone, password).then((userVo) {
-  //     setState(() {
-  //       this.userVo = userVo;
-  //     });
-  //   });
-  // }
-
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
   final TextEditingController nameTextController = TextEditingController();
@@ -68,103 +41,147 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: MARGIN_XXLARGE * 2),
-              WelcomeTitleView(),
-              const SizedBox(height: MARGIN_XLARGE),
-              AuthenticationInfoView(
-                emailTextController: emailTextController,
-                passwordTextController: passwordTextController,
-                nameTextController: nameTextController,
-                phoneTextController: phoneTextController,
-                authTab: authTab,
-                refreshTabIndex: (tabIndex) {
-                  setState(() {});
-                },
-                email: getMail,
-                name: getName,
-              ),
-              const SizedBox(height: MARGIN_XLARGE),
-              AuthenticationButtonSectionView(
-                onTapConfirm: () {
-                  if (authTab.tabIndex == 0) {
-                    email = emailTextController.text;
-                    password = passwordTextController.text;
-                    if (email != "" && password != "") {
-                      userModel.postUserLogin(email, password).then((userVo) {
-                        if (userVo != null) {
-                          setState(() {
-                            this.userVo = userVo;
-                          });
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                        userId: userVo.id ?? 0,
-                                      )));
-                        } else {
-                          showAlertDialog(
-                              context, "Please check your email or password!");
-                        }
-                      }).catchError((error) {
-                        debugPrint(error.toString());
-                      });
-                    }
-                  } else {
-                    email = emailTextController.text;
-                    password = passwordTextController.text;
-                    name = nameTextController.text;
-                    phone = phoneTextController.text;
-                    if (email.isNotEmpty &&
-                        password.isNotEmpty &&
-                        name.isNotEmpty &&
-                        phone.isNotEmpty) {
-                      print(
-                          "$name, $email, $phone, $password, $gToken, $fbToken");
-                      userModel
-                          .postUserRegistration(
-                              name, email, phone, password, gToken, fbToken)
-                          .then((userVo) {
-                        if (userVo != null) {
-                          setState(() {
-                            this.userVo = userVo;
-                          });
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
+    return ChangeNotifierProvider(
+      create: (context) => AuthenticationBloc(),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: MARGIN_XXLARGE * 2),
+                WelcomeTitleView(),
+                const SizedBox(height: MARGIN_XLARGE),
+                AuthenticationInfoView(
+                  emailTextController: emailTextController,
+                  passwordTextController: passwordTextController,
+                  nameTextController: nameTextController,
+                  phoneTextController: phoneTextController,
+                  authTab: authTab,
+                  refreshTabIndex: (tabIndex) {
+                    setState(() {});
+                  },
+                  email: getMail,
+                  name: getName,
+                ),
+                const SizedBox(height: MARGIN_XLARGE),
+                Builder(builder: (context) {
+                  AuthenticationBloc authBloc =
+                      Provider.of(context, listen: false);
+                  return AuthenticationButtonSectionView(
+                    onTapConfirm: () {
+                      if (authTab.tabIndex == 0) {
+                        email = emailTextController.text;
+                        password = passwordTextController.text;
+                        if (email != "" && password != "") {
+                          // userModel.postUserLogin(email, password).then((userVo) {
+                          //   if (userVo != null) {
+                          //     setState(() {
+                          //       this.userVo = userVo;
+                          //     });
+                          //     Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) => HomePage(
+                          //                   userId: userVo.id ?? 0,
+                          //                 )));
+                          //   } else {
+                          //     showAlertDialog(
+                          //         context, "Please check your email or password!");
+                          //   }
+                          // }).catchError((error) {
+                          //   debugPrint(error.toString());
+                          // });
+                          AuthenticationBloc bloc =
+                              Provider.of(context, listen: false);
+                          bloc.onTapLogin(email, password).then((userVo) {
+                            if (userVo != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
                                   builder: (context) =>
-                                      HomePage(userId: userVo.id ?? 0)));
+                                      HomePage(userId: userVo.id ?? 0),
+                                ),
+                              );
+                            } else {
+                              showAlertDialog(context,
+                                  "Please check your email or password!");
+                            }
+                          }).catchError((error) {
+                            debugPrint(error.toString());
+                          });
                         }
-                      }).catchError((error) {
-                        showAlertDialog(context,
-                            "This email or phone number is already exists.");
+                      } else {
+                        email = emailTextController.text;
+                        password = passwordTextController.text;
+                        name = nameTextController.text;
+                        phone = phoneTextController.text;
+                        if (email.isNotEmpty &&
+                            password.isNotEmpty &&
+                            name.isNotEmpty &&
+                            phone.isNotEmpty) {
+                          print(
+                              "$name, $email, $phone, $password, $gToken, $fbToken");
+                          // userModel
+                          //     .postUserRegistration(
+                          //         name, email, phone, password, gToken, fbToken)
+                          //     .then((userVo) {
+                          //   if (userVo != null) {
+                          //     setState(() {
+                          //       this.userVo = userVo;
+                          //     });
+                          //     Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) =>
+                          //                 HomePage(userId: userVo.id ?? 0)));
+                          //   }
+                          // }).catchError((error) {
+                          //   showAlertDialog(context,
+                          //       "This email or phone number is already exists.");
+                          // });
+                          AuthenticationBloc bloc =
+                              Provider.of(context, listen: false);
+                          bloc
+                              .onTapSignUp(
+                                  name, email, phone, password, gToken, fbToken)
+                              .then((user) {
+                            if (user != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      HomePage(userId: user.id ?? 0),
+                                ),
+                              );
+                            }
+                          }).catchError((error) {
+                            showAlertDialog(context,
+                                "This email or phone is already exists.");
+                          });
+                        }
+                      }
+                    },
+                    authTabIndex: authTab.tabIndex,
+                    refreshGoogleLogin: (email, name, token) {
+                      setState(() {
+                        getMail = email;
+                        getName = name;
+                        gToken = token;
                       });
-                    }
-                  }
-                },
-                authTabIndex: authTab.tabIndex,
-                refreshGoogleLogin: (email, name, token) {
-                  setState(() {
-                    getMail = email;
-                    getName = name;
-                    gToken = token;
-                  });
-                },
-                refreshFacebookLogin: (email, name, token) {
-                  setState(() {
-                    getMail = email;
-                    getName = name;
-                    fbToken = token;
-                  });
-                },
-                userModel: userModel,
-              ),
-            ],
+                    },
+                    refreshFacebookLogin: (email, name, token) {
+                      setState(() {
+                        getMail = email;
+                        getName = name;
+                        fbToken = token;
+                      });
+                    },
+                    authBloc: authBloc,
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),
@@ -331,14 +348,14 @@ class AuthenticationButtonSectionView extends StatelessWidget {
   final int authTabIndex;
   final Function(String, String, String) refreshGoogleLogin;
   final Function(String, String, String) refreshFacebookLogin;
-  final UserModel userModel;
+  final AuthenticationBloc authBloc;
 
   AuthenticationButtonSectionView({
     required this.onTapConfirm,
     required this.authTabIndex,
     required this.refreshGoogleLogin,
     required this.refreshFacebookLogin,
-    required this.userModel,
+    required this.authBloc,
   });
 
   @override
@@ -366,18 +383,33 @@ class AuthenticationButtonSectionView extends StatelessWidget {
                   permissions: ['public_profile', 'email'],
                 );
                 if (result.status == LoginStatus.success) {
-                  final userData = await FacebookAuth.i.getUserData(fields: "name, email");
-                  print("Facebook Log In User data ${userData["name"]}, ${userData["email"]}, ${userData["id"]}");
-                  userModel
-                      .postUserLoginFacebook(userData["id"])
-                      .then((userVo) {
-                    if (userVo != null) {
+                  final userData =
+                      await FacebookAuth.i.getUserData(fields: "name, email");
+                  print(
+                      "Facebook Log In User data ${userData["name"]}, ${userData["email"]}, ${userData["id"]}");
+                  // userModel
+                  //     .postUserLoginFacebook(userData["id"])
+                  //     .then((userVo) {
+                  //   if (userVo != null) {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => HomePage(
+                  //           userId: userVo.id ?? 0,
+                  //         ),
+                  //       ),
+                  //     );
+                  //   }
+                  // }).catchError((error) {
+                  //   debugPrint(error.toString());
+                  //   showAlertDialog(context, "Facebook Login Fail!");
+                  // });
+                  authBloc.onTapLoginWithFacebook(userData["id"]).then((user) {
+                    if (user != null) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(
-                            userId: userVo.id ?? 0,
-                          ),
+                          builder: (context) => HomePage(userId: user.id ?? 0),
                         ),
                       );
                     }
@@ -391,7 +423,8 @@ class AuthenticationButtonSectionView extends StatelessWidget {
                   permissions: ['public_profile', 'email'],
                 );
                 if (result.status == LoginStatus.success) {
-                  final userData = await FacebookAuth.i.getUserData(fields: "name, email");
+                  final userData =
+                      await FacebookAuth.i.getUserData(fields: "name, email");
                   print(
                       "Facebook Sign In User data ${userData["name"]}, ${userData["email"]}, ${userData["id"]}");
                   refreshFacebookLogin(
@@ -426,16 +459,30 @@ class AuthenticationButtonSectionView extends StatelessWidget {
                     print(
                         "Google access token Login: ${authentication.accessToken}");
                     print("Google Account ID: ${googleAccount.id}");
-                    userModel
-                        .postUserLoginGoogle(googleAccount.id)
-                        .then((userVo) {
-                      if (userVo != null) {
+                    // userModel
+                    //     .postUserLoginGoogle(googleAccount.id)
+                    //     .then((userVo) {
+                    //   if (userVo != null) {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) => HomePage(
+                    //           userId: userVo.id ?? 0,
+                    //         ),
+                    //       ),
+                    //     );
+                    //   } else {
+                    //     showAlertDialog(context, "Google LogIn Fail");
+                    //   }
+                    // });
+                    authBloc
+                        .onTapLoginWithGoogle(googleAccount.id)
+                        .then((user) {
+                      if (user != null) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(
-                              userId: userVo.id ?? 0,
-                            ),
+                            builder: (context) => HomePage(userId: user.id ?? 0),
                           ),
                         );
                       } else {
