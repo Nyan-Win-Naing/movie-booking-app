@@ -33,6 +33,12 @@ class CinemaSeatVO {
 
   Map<String, dynamic> toJson() => _$CinemaSeatVOToJson(this);
 
+
+  @override
+  String toString() {
+    return 'CinemaSeatVO{seatName: $seatName}';
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

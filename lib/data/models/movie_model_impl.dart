@@ -110,7 +110,7 @@ class MovieModelImpl extends MovieModel {
   @override
   Future<List<CinemaSeatVO>?> getCinemaSeats(
       String token, String timeSlotId, String bookingDate) {
-    return _dataAgent.getCinemaSeats(token, timeSlotId, bookingDate);
+    return _dataAgent.getCinemaSeats(getBearerToken(token), timeSlotId, bookingDate);
   }
 
   // @override
