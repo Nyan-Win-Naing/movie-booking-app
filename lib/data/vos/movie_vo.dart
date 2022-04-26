@@ -169,4 +169,69 @@ class MovieVO {
   String toString() {
     return 'MovieVO{adult: $adult, backDropPath: $backDropPath, genreIds: $genreIds, id: $id, originalLanguage: $originalLanguage, originalTitle: $originalTitle, overview: $overview, popularity: $popularity, posterPath: $posterPath, releaseDate: $releaseDate, title: $title, video: $video, voteAverage: $voteAverage, voteCount: $voteCount}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MovieVO &&
+          runtimeType == other.runtimeType &&
+          adult == other.adult &&
+          backDropPath == other.backDropPath &&
+          genreIds == other.genreIds &&
+          id == other.id &&
+          originalLanguage == other.originalLanguage &&
+          originalTitle == other.originalTitle &&
+          overview == other.overview &&
+          popularity == other.popularity &&
+          posterPath == other.posterPath &&
+          releaseDate == other.releaseDate &&
+          title == other.title &&
+          video == other.video &&
+          voteAverage == other.voteAverage &&
+          voteCount == other.voteCount &&
+          belongsToCollection == other.belongsToCollection &&
+          budget == other.budget &&
+          genres == other.genres &&
+          homePage == other.homePage &&
+          imdbId == other.imdbId &&
+          productionCompanies == other.productionCompanies &&
+          productionCountries == other.productionCountries &&
+          revenue == other.revenue &&
+          runTime == other.runTime &&
+          spokenLanguages == other.spokenLanguages &&
+          status == other.status &&
+          tagLine == other.tagLine &&
+          isNowPlaying == other.isNowPlaying &&
+          isUpComing == other.isUpComing;
+
+  @override
+  int get hashCode =>
+      adult.hashCode ^
+      backDropPath.hashCode ^
+      genreIds.hashCode ^
+      id.hashCode ^
+      originalLanguage.hashCode ^
+      originalTitle.hashCode ^
+      overview.hashCode ^
+      popularity.hashCode ^
+      posterPath.hashCode ^
+      releaseDate.hashCode ^
+      title.hashCode ^
+      video.hashCode ^
+      voteAverage.hashCode ^
+      voteCount.hashCode ^
+      belongsToCollection.hashCode ^
+      budget.hashCode ^
+      genres.hashCode ^
+      homePage.hashCode ^
+      imdbId.hashCode ^
+      productionCompanies.hashCode ^
+      productionCountries.hashCode ^
+      revenue.hashCode ^
+      runTime.hashCode ^
+      spokenLanguages.hashCode ^
+      status.hashCode ^
+      tagLine.hashCode ^
+      isNowPlaying.hashCode ^
+      isUpComing.hashCode;
 }

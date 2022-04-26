@@ -18,4 +18,14 @@ class MovieSeatVO {
     return type == SEAT_TYPE_TEXT;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MovieSeatVO &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          title == other.title;
+
+  @override
+  int get hashCode => type.hashCode ^ title.hashCode;
 }

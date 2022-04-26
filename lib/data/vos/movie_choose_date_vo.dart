@@ -9,4 +9,17 @@ class MovieChooseDateVO {
   String toString() {
     return 'MovieChooseDateVO{dateTime: $dateTime, dayName: $dayName, isSelected: $isSelected}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MovieChooseDateVO &&
+          runtimeType == other.runtimeType &&
+          dateTime == other.dateTime &&
+          dayName == other.dayName &&
+          isSelected == other.isSelected;
+
+  @override
+  int get hashCode =>
+      dateTime.hashCode ^ dayName.hashCode ^ isSelected.hashCode;
 }

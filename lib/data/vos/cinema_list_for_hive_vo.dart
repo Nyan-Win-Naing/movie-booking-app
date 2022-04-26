@@ -15,4 +15,14 @@ class CinemaListForHiveVO {
   String toString() {
     return 'CinemaListForHiveVO{cinemaList: $cinemaList}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CinemaListForHiveVO &&
+          runtimeType == other.runtimeType &&
+          cinemaList == other.cinemaList;
+
+  @override
+  int get hashCode => cinemaList.hashCode;
 }

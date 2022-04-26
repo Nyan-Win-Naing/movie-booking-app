@@ -28,4 +28,18 @@ class PaymentMethodVO {
       _$PaymentMethodVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$PaymentMethodVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PaymentMethodVO &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          description == other.description &&
+          isSelected == other.isSelected;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^ name.hashCode ^ description.hashCode ^ isSelected.hashCode;
 }

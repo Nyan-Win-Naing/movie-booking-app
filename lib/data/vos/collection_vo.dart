@@ -29,4 +29,18 @@ class CollectionVO {
       _$CollectionVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$CollectionVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CollectionVO &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          posterPath == other.posterPath &&
+          backdropPath == other.backdropPath;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^ name.hashCode ^ posterPath.hashCode ^ backdropPath.hashCode;
 }

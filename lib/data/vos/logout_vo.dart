@@ -20,4 +20,15 @@ class LogoutVO {
   String toString() {
     return 'LogoutVO{code: $code, message: $message}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LogoutVO &&
+          runtimeType == other.runtimeType &&
+          code == other.code &&
+          message == other.message;
+
+  @override
+  int get hashCode => code.hashCode ^ message.hashCode;
 }

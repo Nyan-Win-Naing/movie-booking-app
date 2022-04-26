@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_booking_app/blocs/movie_choose_time_bloc.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/models/user_model.dart';
@@ -14,202 +15,129 @@ import 'package:movie_booking_app/resources/back_action.dart';
 import 'package:movie_booking_app/resources/colors.dart';
 import 'package:movie_booking_app/resources/dimens.dart';
 import 'package:movie_booking_app/widgets/common_button_view.dart';
+import 'package:provider/provider.dart';
 
-class MovieChooseTimePage extends StatefulWidget {
+class MovieChooseTimePage extends StatelessWidget {
   final UserVO? userVo;
   final int movieId;
 
   MovieChooseTimePage({required this.userVo, required this.movieId});
 
   @override
-  State<MovieChooseTimePage> createState() => _MovieChooseTimePageState();
-}
-
-class _MovieChooseTimePageState extends State<MovieChooseTimePage> {
-  /// Model Object
-  UserModel userModel = UserModelImpl();
-  MovieModel movieModel = MovieModelImpl();
-
-  late List<MovieChooseDateVO> movieDateList;
-  late MovieChooseDateVO movieChooseDateVo;
-
-  /// State Variables
-  UserVO? userVo;
-  List<CinemaVO>? cinemaList;
-  CinemaVO? selectedCinema;
-
-  @override
-  void initState() {
-    /// Set date list
-    movieDateList = dummyMovieChooseDates;
-
-    /// First Date Selected
-    movieDateList.forEach((movie) {
-      if (movie.isSelected == true) {
-        movie.isSelected = false;
-      }
-    });
-
-    movieChooseDateVo = movieDateList.first;
-    movieChooseDateVo.isSelected = true;
-    print(movieChooseDateVo);
-
-    /// Get Cinema
-    // movieModel
-    //     .getCinemas(
-    //   "Bearer ${widget.userVo?.token}",
-    //   "${widget.movieId}",
-    //   movieChooseDateVo.dateTime.toString().substring(0, 10),
-    // )
-    //     .then((cinemas) {
-    //
-    //   setState(() {
-    //     cinemaList = cinemas;
-    //   });
-    // }).catchError((error) {
-    //   // debugPrint(error);
-    //   print(error);
-    // });
-
-    /// Get Cinema Database
-    getCinemasByDate();
-
-    super.initState();
-  }
-
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void getCinemasByDate() {
-    movieModel
-        .getCinemasFromDatabase(
-            "${widget.userVo?.token}",
-            "${widget.movieId}",
-            movieChooseDateVo.isSelected
-                ? movieChooseDateVo.dateTime.toString().substring(0, 10)
-                : "")
-        .listen((cinemas) {
-      if (mounted) {
-        setState(() {
-          cinemaList = cinemas ?? [];
-        });
-      }
-    }).onError((error) {
-      print(error);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: ON_BOARDING_BACKGROUND_COLOR,
-        leading: GestureDetector(
-          onTap: () {
-            backAction(context);
-          },
-          child: const Icon(
-            Icons.chevron_left,
-            color: Colors.white,
-            size: MARGIN_XXLARGE,
+    return ChangeNotifierProvider(
+      create: (context) => MovieChooseTimeBloc(userVo, movieId),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: ON_BOARDING_BACKGROUND_COLOR,
+          leading: GestureDetector(
+            onTap: () {
+              backAction(context);
+            },
+            child: const Icon(
+              Icons.chevron_left,
+              color: Colors.white,
+              size: MARGIN_XXLARGE,
+            ),
           ),
         ),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              MovieChooseDateView(
-                movieDateList: movieDateList,
-                showCinemasByDate: (movieChooseDateVo) {
-                  setState(() {});
-                  // movieModel
-                  //     .getCinemasFromDatabase(
-                  //         "Bearer ${widget.userVo?.token}",
-                  //         "${widget.movieId}",
-                  //         movieChooseDateVo.isSelected
-                  //             ? movieChooseDateVo.dateTime
-                  //                 .toString()
-                  //                 .substring(0, 10)
-                  //             : "")
-                  //     .listen((cinemas) {
-                  //   setState(() {
-                  //     cinemaList = cinemas;
-                  //   });
-                  // }).onError((error) {
-                  //   // debugPrint(error.toString());
-                  //   print(error);
-                  // });
-                  /// Cinema Database
-                  movieModel
-                      .getCinemasFromDatabase(
-                    "${widget.userVo?.token}",
-                    "${widget.movieId}",
-                    movieChooseDateVo.dateTime.toString().substring(0, 10),
-                  )
-                      .listen((cinemas) {
-                    if(mounted) {
-                      setState(() {
-                        cinemaList = cinemas ?? [];
-                      });
-                    }
-                  }).onError((error) {
-                    print(error);
-                  });
-                },
-              ),
-              ChooseItemGridSectionView(cinemas: cinemaList),
-              const SizedBox(height: MARGIN_LARGE),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-                child: CommonButtonView(
-                  "Next",
-                  () {
-                    String cinemaName = "";
-                    String movieCinemaTime = "";
-                    MovieChooseDateVO? movieDate = null;
-                    TimeSlotVO? tsv = null;
-
-                    cinemaList?.forEach((c) {
-                      c.timeSlots?.forEach((t) {
-                        if (t.isSelected == true) {
-                          cinemaName = c.cinema ?? "";
-                          selectedCinema = c;
-                          tsv = t;
-                        }
-                      });
-                    });
-
-                    movieDateList.forEach((md) {
-                      if (md.isSelected == true) {
-                        movieDate = md;
-                      }
-                    });
-
-                    // if (tsv != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MovieSeatsPage(
-                          movieId: widget.movieId,
-                          cinemaName: cinemaName,
-                          timeSlotVo: tsv,
-                          movieDate: movieDate,
-                          userVo: widget.userVo,
-                          cinemaVo: selectedCinema,
-                        ),
-                      ),
-                    );
-                    // }
-                  },
+        body: Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Selector<MovieChooseTimeBloc, List<MovieChooseDateVO>>(
+                  selector: (context, bloc) => bloc.movieDateList ?? [],
+                  shouldRebuild: (previous, next) => previous != next,
+                  builder: (context, movieDateList, child) =>
+                      MovieChooseDateView(
+                    movieDateList: movieDateList,
+                    showCinemasByDate: (movieChooseDateVo) {
+                      // setState(() {});
+                      print("");
+                      // movieModel
+                      //     .getCinemasFromDatabase(
+                      //         "Bearer ${widget.userVo?.token}",
+                      //         "${widget.movieId}",
+                      //         movieChooseDateVo.isSelected
+                      //             ? movieChooseDateVo.dateTime
+                      //                 .toString()
+                      //                 .substring(0, 10)
+                      //             : "")
+                      //     .listen((cinemas) {
+                      //   setState(() {
+                      //     cinemaList = cinemas;
+                      //   });
+                      // }).onError((error) {
+                      //   // debugPrint(error.toString());
+                      //   print(error);
+                      // });
+                      /// Cinema Database
+                      // movieModel
+                      //     .getCinemasFromDatabase(
+                      //   "${widget.userVo?.token}",
+                      //   "${widget.movieId}",
+                      //   movieChooseDateVo.dateTime.toString().substring(0, 10),
+                      // )
+                      //     .listen((cinemas) {
+                      //   if (mounted) {
+                      //     setState(() {
+                      //       cinemaList = cinemas ?? [];
+                      //     });
+                      //   }
+                      // }).onError((error) {
+                      //   print(error);
+                      // });
+                      MovieChooseTimeBloc bloc =
+                          Provider.of<MovieChooseTimeBloc>(context,
+                              listen: false);
+                      bloc.onTapDate(movieChooseDateVo, movieId);
+                    },
+                  ),
                 ),
-              ),
-            ],
+                Selector<MovieChooseTimeBloc, List<CinemaVO>>(
+                  selector: (context, bloc) => bloc.cinemaList ?? [],
+                  shouldRebuild: (previous, next) => previous != next,
+                  builder: (context, cinemaList, child) =>
+                      ChooseItemGridSectionView(cinemas: cinemaList),
+                ),
+                const SizedBox(height: MARGIN_LARGE),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+                  child: Builder(
+                    builder: (context) {
+                      return CommonButtonView(
+                        "Next",
+                            () {
+                          MovieChooseTimeBloc bloc = Provider.of<MovieChooseTimeBloc>(context, listen: false);
+                          String cinemaName = bloc.getSelectedCinema()?.cinema ?? "";
+                          MovieChooseDateVO? movieDate = bloc.getSelectedDate();
+                          TimeSlotVO? tsv = bloc.getSelectedTimeSlot();
+
+                          // print("Cinema name: $cinemaName, Movie Date: $movieDate, Time Slot: $tsv...........");
+                          // print("Selected cinema: ${bloc.getSelectedCinema()}.......");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MovieSeatsPage(
+                                movieId: movieId,
+                                cinemaName: cinemaName,
+                                timeSlotVo: tsv,
+                                movieDate: movieDate,
+                                userVo: userVo,
+                                cinemaVo: bloc.getSelectedCinema(),
+                              ),
+                            ),
+                          );
+
+                        },
+                      );
+                    }
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -274,16 +202,13 @@ class _ChooseItemGridSectionViewState extends State<ChooseItemGridSectionView> {
                       itemBuilder: (context, indexOfTimeSlotItem) {
                         return GestureDetector(
                           onTap: () {
-                            setState(() {
-                              cinemaList.forEach((cinema) {
-                                cinema.timeSlots?.forEach((timeSlotItem) {
-                                  timeSlotItem.isSelected = false;
-                                });
-                              });
-                              cinemaList[indexOfCinema]
-                                  .timeSlots?[indexOfTimeSlotItem]
-                                  .isSelected = true;
-                            });
+                            MovieChooseTimeBloc bloc =
+                                Provider.of<MovieChooseTimeBloc>(context,
+                                    listen: false);
+                            bloc.onTapCinemaTimeSlot(
+                                indexOfCinema, indexOfTimeSlotItem);
+                            print(
+                                "Time Slot id is : ${cinemaList[indexOfCinema].timeSlots?[indexOfTimeSlotItem].timeslotId}............");
                           },
                           child: TimeSlotItem(
                               timeSlots:

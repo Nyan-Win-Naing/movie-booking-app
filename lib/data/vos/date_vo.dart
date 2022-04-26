@@ -19,4 +19,15 @@ class DateVO {
   factory DateVO.fromJson(Map<String, dynamic> json) => _$DateVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$DateVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DateVO &&
+          runtimeType == other.runtimeType &&
+          maximum == other.maximum &&
+          minimum == other.minimum;
+
+  @override
+  int get hashCode => maximum.hashCode ^ minimum.hashCode;
 }

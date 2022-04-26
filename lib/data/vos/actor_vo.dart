@@ -75,4 +75,37 @@ class ActorVO {
       _$ActorVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$ActorVOToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ActorVO &&
+          runtimeType == other.runtimeType &&
+          adult == other.adult &&
+          id == other.id &&
+          knownFor == other.knownFor &&
+          popularity == other.popularity &&
+          name == other.name &&
+          profilePath == other.profilePath &&
+          knownForDepartment == other.knownForDepartment &&
+          originalName == other.originalName &&
+          castId == other.castId &&
+          character == other.character &&
+          creditId == other.creditId &&
+          order == other.order;
+
+  @override
+  int get hashCode =>
+      adult.hashCode ^
+      id.hashCode ^
+      knownFor.hashCode ^
+      popularity.hashCode ^
+      name.hashCode ^
+      profilePath.hashCode ^
+      knownForDepartment.hashCode ^
+      originalName.hashCode ^
+      castId.hashCode ^
+      character.hashCode ^
+      creditId.hashCode ^
+      order.hashCode;
 }

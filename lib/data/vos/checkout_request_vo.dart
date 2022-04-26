@@ -53,4 +53,31 @@ class CheckoutRequest {
   String toString() {
     return 'CheckoutRequest{cinemaDayTimeslotId: $cinemaDayTimeslotId, row: $row, seatNumber: $seatNumber, bookingDate: $bookingDate, totalPrice: $totalPrice, movieId: $movieId, cardId: $cardId, cinemaId: $cinemaId, snacks: $snacks}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CheckoutRequest &&
+          runtimeType == other.runtimeType &&
+          cinemaDayTimeslotId == other.cinemaDayTimeslotId &&
+          row == other.row &&
+          seatNumber == other.seatNumber &&
+          bookingDate == other.bookingDate &&
+          totalPrice == other.totalPrice &&
+          movieId == other.movieId &&
+          cardId == other.cardId &&
+          cinemaId == other.cinemaId &&
+          snacks == other.snacks;
+
+  @override
+  int get hashCode =>
+      cinemaDayTimeslotId.hashCode ^
+      row.hashCode ^
+      seatNumber.hashCode ^
+      bookingDate.hashCode ^
+      totalPrice.hashCode ^
+      movieId.hashCode ^
+      cardId.hashCode ^
+      cinemaId.hashCode ^
+      snacks.hashCode;
 }
