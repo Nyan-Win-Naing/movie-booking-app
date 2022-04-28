@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_booking_app/blocs/payment_form_bloc.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/user_vo.dart';
@@ -9,8 +10,9 @@ import 'package:movie_booking_app/resources/show_alert_dialog.dart';
 import 'package:movie_booking_app/resources/strings.dart';
 import 'package:movie_booking_app/widgets/common_button_view.dart';
 import 'package:movie_booking_app/widgets/form_style_view.dart';
+import 'package:provider/provider.dart';
 
-class PaymentFormPage extends StatefulWidget {
+class PaymentFormPage extends StatelessWidget {
   final UserVO? userVo;
   final Function refreshPaymentPageCards;
 
@@ -18,14 +20,6 @@ class PaymentFormPage extends StatefulWidget {
     required this.userVo,
     required this.refreshPaymentPageCards,
   });
-
-  @override
-  State<PaymentFormPage> createState() => _PaymentFormPageState();
-}
-
-class _PaymentFormPageState extends State<PaymentFormPage> {
-  /// Model
-  MovieModel _movieModel = MovieModelImpl();
 
   final TextEditingController cNumberController = TextEditingController();
 
@@ -37,74 +31,90 @@ class _PaymentFormPageState extends State<PaymentFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        title: const Text(
-          PAYMENT_FORM_TITLE,
-          style: TextStyle(
-            color: Colors.black54,
+    return ChangeNotifierProvider(
+      create: (context) => PaymentFormBloc(userVo),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          title: const Text(
+            PAYMENT_FORM_TITLE,
+            style: TextStyle(
+              color: Colors.black54,
+            ),
+          ),
+          leading: GestureDetector(
+            onTap: () {
+              refreshPaymentPageCards();
+              backAction(context);
+            },
+            child: const Icon(
+              Icons.chevron_left,
+              color: Colors.black,
+              size: MARGIN_XXLARGE,
+            ),
           ),
         ),
-        leading: GestureDetector(
-          onTap: () {
-            widget.refreshPaymentPageCards();
-            backAction(context);
-          },
-          child: const Icon(
-            Icons.chevron_left,
-            color: Colors.black,
-            size: MARGIN_XXLARGE,
-          ),
-        ),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: MARGIN_XXLARGE),
-              PaymentFormSectionView(
-                cnc: cNumberController,
-                chc: cHolderController,
-                cec: cExpireController,
-                ccc: cCvcController,
-              ),
-              const SizedBox(height: MARGIN_XLARGE),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-                child: CommonButtonView(
-                  "Confirm",
-                  () {
-                    print("Tap Tap");
-                    _movieModel
-                        .postCreateCard(
-                            "${widget.userVo?.token}",
-                            cNumberController.text,
-                            cHolderController.text,
-                            cExpireController.text,
-                            cCvcController.text)
-                        .then((cardList) {
-                      showAlertDialog(context, "Account Create Successfully");
-
-                      _movieModel
-                          .getProfileFromDatabase("${widget.userVo?.token}")
-                          .listen((userVo) {
-                        print("It works......");
-                      }).onError((error) {
-                        debugPrint(error.toString());
-                      });
-                    }).catchError((error) {
-                      debugPrint(error.toString());
-                    });
-
-                                      },
+        body: Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: MARGIN_XXLARGE),
+                PaymentFormSectionView(
+                  cnc: cNumberController,
+                  chc: cHolderController,
+                  cec: cExpireController,
+                  ccc: cCvcController,
                 ),
-              ),
-            ],
+                const SizedBox(height: MARGIN_XLARGE),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
+                  child: Builder(builder: (context) {
+                    return CommonButtonView(
+                      "Confirm",
+                      () {
+                        print("Tap Tap");
+                        // _movieModel
+                        //     .postCreateCard(
+                        //     "${widget.userVo?.token}",
+                        //     cNumberController.text,
+                        //     cHolderController.text,
+                        //     cExpireController.text,
+                        //     cCvcController.text)
+                        //     .then((cardList) {
+                        //   showAlertDialog(context, "Account Create Successfully");
+                        //
+                        //   _movieModel
+                        //       .getProfileFromDatabase("${widget.userVo?.token}")
+                        //       .listen((userVo) {
+                        //     print("It works......");
+                        //   }).onError((error) {
+                        //     debugPrint(error.toString());
+                        //   });
+                        // }).catchError((error) {
+                        //   debugPrint(error.toString());
+                        // });
+
+                        PaymentFormBloc bloc = Provider.of<PaymentFormBloc>(
+                            context,
+                            listen: false);
+                        bloc.onTapConfirm(
+                          userVo,
+                          cNumberController.text,
+                          cHolderController.text,
+                          cExpireController.text,
+                          cCvcController.text,
+                          context,
+                        );
+                      },
+                    );
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
       ),

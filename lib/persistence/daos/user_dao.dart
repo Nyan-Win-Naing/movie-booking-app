@@ -15,6 +15,7 @@ class UserDao {
   void saveUser(UserVO? userVO) async {
     if(userVO != null) {
       await getUserBox().put(userVO.id, userVO);
+      print("Saved user.......");
     }
   }
 
@@ -47,7 +48,7 @@ class UserDao {
   }
 
   Stream<UserVO?> getUserStream(int userId) {
-    print("Get User Stream in DAO....");
+    print("Get User Stream in DAO ${userId}....");
     return Stream.value(getUserById(userId));
   }
 

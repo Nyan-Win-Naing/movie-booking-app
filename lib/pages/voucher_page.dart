@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_booking_app/blocs/voucher_bloc.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/card_vo.dart';
@@ -19,30 +20,9 @@ import 'package:movie_booking_app/resources/colors.dart';
 import 'package:movie_booking_app/resources/dimens.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:provider/provider.dart';
 
-class VoucherPage extends StatefulWidget {
-  // final int paymentAmount;
-  // final UserVO? userVo;
-  //
-  // final TimeSlotVO? timeSlotVo;
-  // final List<CinemaSeatVO>? selectSeats;
-  // final MovieChooseDateVO? movieDate;
-  // final int movieId;
-  // final CinemaVO? cinemaVo;
-  // final List<SnackVO>? snackList;
-  // final CardVO? cardVo;
-  //
-  // VoucherPage({
-  //   required this.paymentAmount,
-  //   required this.userVo,
-  //   required this.timeSlotVo,
-  //   required this.selectSeats,
-  //   required this.movieDate,
-  //   required this.movieId,
-  //   required this.cinemaVo,
-  //   required this.snackList,
-  //   required this.cardVo,
-  // });
+class VoucherPage extends StatelessWidget {
 
   final int movieId;
   final UserVO? userVo;
@@ -57,118 +37,51 @@ class VoucherPage extends StatefulWidget {
   });
 
   @override
-  State<VoucherPage> createState() => _VoucherPageState();
-}
-
-class _VoucherPageState extends State<VoucherPage> {
-  /// Movie Model
-  MovieModel _movieModel = MovieModelImpl();
-
-  /// State Variables
-  VoucherVO? voucherVo;
-  MovieVO? movieVo;
-
-  @override
-  void initState() {
-    // Set<String> selectedRows = {};
-    //
-    // widget.selectSeats?.forEach((seat) {
-    //   selectedRows.add(seat.symbol ?? "");
-    // });
-    //
-    // String? selectedSeats =
-    //     widget.selectSeats?.map((s) => s.seatName).toList().join(", ");
-    //
-    // List<SnackRequest>? snackRequestList = widget.snackList?.map((snack) {
-    //   return SnackRequest(snack.id ?? 0, snack.quantity ?? 0);
-    // }).toList();
-    //
-    // print("Cinema TimeSlot id: ${widget.timeSlotVo?.timeslotId},"
-    //     " row: ${selectedRows.toList().join(",")},"
-    //     " seatNumber: $selectedSeats,"
-    //     " bookingDate: ${widget.movieDate?.dateTime.toString().substring(0, 10)},"
-    //     " total price: ${widget.paymentAmount},"
-    //     " movieId: ${widget.movieId},"
-    //     " cardId: ${widget.cardVo?.id},"
-    //     " cinemaId: ${widget.cinemaVo?.cinemaId},"
-    //     " snacks: $snackRequestList");
-
-    // _movieModel.getMovieDetails(widget.movieId).then((movie) {
-    //   setState(() {
-    //     movieVo = movie;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    // });
-    /// Movie Details From Database
-    _movieModel.getMovieDetailsFromDatabase(widget.movieId).listen((movie) {
-      setState(() {
-        movieVo = movie;
-      });
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-
-    /// Set voucher state
-    voucherVo = widget.voucherVo;
-    // _movieModel
-    //     .postCheckout(
-    //         "Bearer ${widget.userVo?.token}",
-    //         widget.paymentAmount,
-    //         widget.userVo,
-    //         widget.timeSlotVo,
-    //         widget.selectSeats,
-    //         widget.movieDate,
-    //         widget.movieId,
-    //         widget.cinemaVo,
-    //         widget.snackList,
-    //         widget.cardVo)
-    //     .then((voucher) {
-    //   setState(() {
-    //     voucherVo = voucher;
-    //   });
-    // }).catchError((error) {
-    //   debugPrint(error.toString());
-    //   print(error);
-    // });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print(voucherVo);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(250, 250, 250, 1.0),
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        HomePage(userId: widget.userVo?.id ?? 0)));
-          },
-          child: const Icon(
-            Icons.close,
-            color: Colors.black,
-            size: MARGIN_XLARGE,
+    // print(voucherVo);
+    return ChangeNotifierProvider(
+      create: (context) => VoucherBloc(movieId, voucherVo),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(250, 250, 250, 1.0),
+          elevation: 0,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          HomePage(userId: userVo?.id ?? 0)));
+            },
+            child: const Icon(
+              Icons.close,
+              color: Colors.black,
+              size: MARGIN_XLARGE,
+            ),
           ),
         ),
-      ),
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              VoucherTitleSectionView(),
-              const SizedBox(height: MARGIN_MEDIUM_2),
-              VoucherSectionView(
-                movieVo: movieVo,
-                voucherVo: voucherVo,
-                cinemaVo: widget.cinemaVo,
-              ),
-              const SizedBox(height: MARGIN_XXLARGE),
-            ],
+        body: Container(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                VoucherTitleSectionView(),
+                const SizedBox(height: MARGIN_MEDIUM_2),
+                Selector<VoucherBloc, MovieVO?>(
+                  selector: (context, bloc) => bloc.movieVo,
+                  builder: (context, movieVo, child) =>
+                      Selector<VoucherBloc, VoucherVO?>(
+                        selector: (context, bloc) => bloc.voucherVo,
+                        builder: (context, voucherVo, child) =>
+                            VoucherSectionView(
+                              movieVo: movieVo,
+                              voucherVo: voucherVo,
+                              cinemaVo: cinemaVo,
+                            ),
+                      ),
+                ),
+                const SizedBox(height: MARGIN_XXLARGE),
+              ],
+            ),
           ),
         ),
       ),

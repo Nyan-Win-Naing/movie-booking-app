@@ -148,7 +148,9 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Future<UserVO?> getProfile(String token) {
+  Future<UserVO?> getProfile(String token) async {
+    print("Token in get profile method is : $token......");
+    token = getBearerToken(token);
     return _dataAgent.getProfile(token).then((userVo) async {
       userDao.deleteUser(userVo);
       userVo?.token = token.substring(7);
@@ -275,15 +277,19 @@ class MovieModelImpl extends MovieModel {
 
   @override
   Stream<UserVO?> getProfileFromDatabase(String token) {
-    UserVO? user;
-    this.getProfile(getBearerToken(token)).then((userVo) {
-      user = userVo;
+    // UserVO? user;
+    getProfile(token).then((userVo) {
+
     });
+
+    UserVO? user = userDao.getUserList().first;
+
+    print("User after calling get profile in Movie Model impl: $user......");
     return userDao
         .getUserEventStream()
-        .startWith(userDao.getUserStream(user?.id ?? 0))
+        .startWith(userDao.getUserStream(user.id ?? 0))
         .map((event) {
-      return userDao.getUser(user?.id ?? 0);
+      return userDao.getUser(user.id ?? 0);
     });
   }
 }
