@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_booking_app/blocs/payment_bloc.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/card_vo.dart';
@@ -20,8 +21,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:movie_booking_app/resources/selected_card.dart';
 import 'package:movie_booking_app/resources/strings.dart';
 import 'package:movie_booking_app/widgets/common_button_view.dart';
+import 'package:provider/provider.dart';
 
-class PaymentPage extends StatefulWidget {
+class PaymentPage extends StatelessWidget {
   final int paymentAmount;
   final UserVO? userVo;
 
@@ -44,162 +46,117 @@ class PaymentPage extends StatefulWidget {
   });
 
   @override
-  State<PaymentPage> createState() {
-    return _PaymentPageState();
-  }
-}
-
-class _PaymentPageState extends State<PaymentPage> {
-  /// Movie Model
-  MovieModel _movieModel = MovieModelImpl();
-
-  /// State Variables
-  UserVO? userVo;
-  CardVO? cardVo;
-  VoucherVO? voucherVo;
-
-  @override
-  void initState() {
-    getProfile();
-    super.initState();
-  }
-
-  void getProfile() {
-    int cardLength = 0;
-    _movieModel
-        .getProfileFromDatabase("${widget.userVo?.token}")
-        .listen((userVo) {
-      if (mounted) {
-        setState(() {
-          this.userVo = userVo;
-          cardLength = userVo?.cards?.length ?? 0;
-          if (cardLength > 0) {
-            cardVo = userVo?.cards?.first;
-          }
-        });
-      }
-    }).onError((error) {
-      debugPrint(error.toString());
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print("Parent Widget : ${cardVo?.id}");
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        leading: GestureDetector(
-          onTap: () {
-            backAction(context);
-          },
-          child: const Icon(
-            Icons.chevron_left,
-            color: Colors.black,
-            size: MARGIN_XXLARGE,
+    // print("Parent Widget : ${cardVo?.id}");
+    return ChangeNotifierProvider(
+      create: (context) => PaymentBloc(paymentAmount, userVo, timeSlotVo,
+          selectSeats, movieDate, movieId, cinemaVo, snackList),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          leading: GestureDetector(
+            onTap: () {
+              backAction(context);
+            },
+            child: const Icon(
+              Icons.chevron_left,
+              color: Colors.black,
+              size: MARGIN_XXLARGE,
+            ),
           ),
         ),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: MARGIN_MEDIUM_2),
-                PaymentAmountSectionView(
-                  paymentAmount: widget.paymentAmount,
-                ),
-                const SizedBox(height: MARGIN_MEDIUM_3),
-                CardCarouselSectionView(
-                  userVo: userVo,
-                  cardChange: (cardVo) {
-                    setState(() {
-                      this.cardVo = cardVo;
-                    });
-                  },
-                ),
-                const SizedBox(height: MARGIN_LARGE),
-                AddNewCardView(
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PaymentFormPage(
-                        userVo: widget.userVo,
-                        refreshPaymentPageCards: () {
-                          setState(() {});
+        body: Container(
+          color: Colors.white,
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: MARGIN_MEDIUM_2),
+                  PaymentAmountSectionView(
+                    paymentAmount: paymentAmount,
+                  ),
+                  const SizedBox(height: MARGIN_MEDIUM_3),
+                  Builder(
+                    builder: (context) {
+                      return CardCarouselSectionView(
+                        userVo: userVo,
+                        cardChange: (cardVo) {
+                          // setState(() {
+                          //   this.cardVo = cardVo;
+                          // });
+                          PaymentBloc bloc = Provider.of<PaymentBloc>(context, listen: false);
+                          bloc.onChangeCard(cardVo);
                         },
+                      );
+                    }
+                  ),
+                  const SizedBox(height: MARGIN_LARGE),
+                  AddNewCardView(
+                        () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PaymentFormPage(
+                          userVo: userVo,
+                          refreshPaymentPageCards: () {},
+                        ),
                       ),
                     ),
+                    // .then((value) => getProfile()),
                   ),
-                  // .then((value) => getProfile()),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_2),
-                child: CommonButtonView(
-                  "Purchase",
-                  () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => VoucherPage(
-                    //       paymentAmount: widget.paymentAmount,
-                    //       userVo: widget.userVo,
-                    //       timeSlotVo: widget.timeSlotVo,
-                    //       selectSeats: widget.selectSeats,
-                    //       movieDate: widget.movieDate,
-                    //       movieId: widget.movieId,
-                    //       cinemaVo: widget.cinemaVo,
-                    //       snackList: widget.snackList,
-                    //       cardVo: cardVo,
-                    //     ),
-                    //   ),
-                    // );
-
-                    _movieModel
-                        .postCheckout(
-                            "Bearer ${widget.userVo?.token}",
-                            widget.paymentAmount,
-                            widget.userVo,
-                            widget.timeSlotVo,
-                            widget.selectSeats,
-                            widget.movieDate,
-                            widget.movieId,
-                            widget.cinemaVo,
-                            widget.snackList,
-                            cardVo)
-                        .then((voucher) {
-                      // setState(() {
-                        voucherVo = voucher;
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VoucherPage(
-                              movieId: widget.movieId,
-                              userVo: widget.userVo,
-                              cinemaVo: widget.cinemaVo,
-                              voucherVo: voucherVo,
-                            ),
-                          ),
-                        );
-                      // });
-                    }).catchError((error) {
-                      debugPrint(error.toString());
-                      print(error);
-                    });
-
-                  },
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_2),
+                  child: Selector<PaymentBloc, CardVO?>(
+                    selector: (context, bloc) => bloc.cardVo,
+                    builder: (context, cardVo, child) =>
+                        CommonButtonView(
+                          "Purchase",
+                              () {
+                            // _movieModel
+                            //     .postCheckout(
+                            //     "Bearer ${userVo?.token}",
+                            //     paymentAmount,
+                            //     userVo,
+                            //     timeSlotVo,
+                            //     selectSeats,
+                            //     movieDate,
+                            //     movieId,
+                            //     cinemaVo,
+                            //     snackList,
+                            //     cardVo)
+                            //     .then((voucher) {
+                            //   // setState(() {
+                            //   voucherVo = voucher;
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => VoucherPage(
+                            //         movieId: widget.movieId,
+                            //         userVo: widget.userVo,
+                            //         cinemaVo: widget.cinemaVo,
+                            //         voucherVo: voucherVo,
+                            //       ),
+                            //     ),
+                            //   );
+                            //   // });
+                            // }).catchError((error) {
+                            //   debugPrint(error.toString());
+                            //   print(error);
+                            // });
+                                print("Chose Card VO is : ${cardVo?.id}.......");
+                          },
+                        ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -269,10 +226,8 @@ class _CardCarouselSectionViewState extends State<CardCarouselSectionView> {
           height: 210,
           enlargeCenterPage: true,
           onPageChanged: (index, reason) {
-            // setState(() {
             _carouselPageIndex = index;
             widget.cardChange(cardList[index]);
-            // });
           },
         ),
         items: cardList.length != 0
@@ -317,9 +272,10 @@ class CardSectionView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           horizontal: MARGIN_LARGE, vertical: MARGIN_MEDIUM_2),
       decoration: BoxDecoration(
-        color: cardIndex == currentPageIndex
-            ? CURRENT_PAYMENT_CARD_BACKGROUND_COLOR
-            : PAYMENT_CARD_BACKGROUND_COLOR,
+        // color: cardIndex == currentPageIndex
+        //     ? CURRENT_PAYMENT_CARD_BACKGROUND_COLOR
+        //     : PAYMENT_CARD_BACKGROUND_COLOR,
+        color: CURRENT_PAYMENT_CARD_BACKGROUND_COLOR,
         borderRadius: BorderRadius.circular(MARGIN_MEDIUM),
       ),
       child: Column(
