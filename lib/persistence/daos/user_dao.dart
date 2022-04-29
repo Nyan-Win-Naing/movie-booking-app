@@ -44,17 +44,21 @@ class UserDao {
 
   /// Reactive Programming
   Stream<void> getUserEventStream() {
+    print("Get user event stream work......");
     return getUserBox().watch();
   }
 
   Stream<UserVO?> getUserStream(int userId) {
-    print("Get User Stream in DAO ${userId}....");
-    return Stream.value(getUserById(userId));
+    // return Stream.value(getUserById(userId));
+    print("getUserStream(int userId): ${getUserById(getUserList().first.id ?? 0)}");
+    return Stream.value(getUserById(getUserList().first.id ?? 0));
   }
 
   UserVO? getUser(int userId) {
-    if(getUserById(userId) != null) {
-      return getUserById(userId);
+    print("getUser(int userId) ${getUserById(getUserList().first.id ?? 0)}....");
+    if(getUserById(getUserList().first.id ?? 0) != null) {
+      // return getUserById(userId);
+      return getUserById(getUserList().first.id ?? 0);
     } else {
       UserVO userVo = UserVO(0, "", "", "", 0, "", []);
       userVo.token = "";

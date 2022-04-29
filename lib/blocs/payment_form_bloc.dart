@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/user_vo.dart';
@@ -20,7 +21,7 @@ class PaymentFormBloc extends ChangeNotifier {
       BuildContext context,
   ) {
     movieModel.postCreateCard(userVo?.token ?? "", cardNumber, cardHolder, cardExpire, cardCvc)
-        .then((cardList) {
+        .then((cardList) async {
           showAlertDialog(context, "Account Create Successfully");
           movieModel.getProfileFromDatabase(userVo?.token ?? "").listen((userVo) {
             print("It works.....");

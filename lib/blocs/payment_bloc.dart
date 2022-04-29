@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/card_vo.dart';
@@ -31,15 +32,19 @@ class PaymentBloc extends ChangeNotifier {
   ) {
     /// Get Profile from Database
     int cardLength = 0;
-    movieModel.getProfileFromDatabase(userVo?.token ?? "")
-    .listen((userVo) {
+
+    movieModel
+        .getProfileFromDatabase(userVo?.token ?? "")
+        .listen((userVo) {
       this.userVo = userVo;
       notifyListeners();
+      print("User vo in payment bloc constructor: ${this.userVo}..........");
       cardLength = userVo?.cards?.length ?? 0;
-      if(cardLength > 0) {
+      if (cardLength > 0) {
         cardVo = userVo?.cards?.first;
         notifyListeners();
       }
+      print("Card vo in payment bloc constructor is : $cardVo");
     }).onError((error) {
       debugPrint(error.toString());
     });
@@ -48,5 +53,26 @@ class PaymentBloc extends ChangeNotifier {
   void onChangeCard(CardVO? cardVo) {
     this.cardVo = cardVo;
     notifyListeners();
+  }
+
+  Future<VoucherVO?> onTapPurchase(
+    String token,
+    int paymentAmount,
+    UserVO? userVo,
+    TimeSlotVO? timeSlotVo,
+    List<CinemaSeatVO>? selectSeats,
+    MovieChooseDateVO? movieDate,
+    int movieId,
+    CinemaVO? cinemaVo,
+    List<SnackVO>? snackList,
+    CardVO? cardVo,
+  ) {
+    return movieModel.postCheckout(token, paymentAmount, userVo, timeSlotVo, selectSeats, movieDate, movieId, cinemaVo, snackList, cardVo,)
+        .then((voucher) {
+          print("Voucher In Bloc: $voucher");
+          return Future.value(voucher);
+    }).catchError((error) {
+      debugPrint(error.toString());
+    });
   }
 }

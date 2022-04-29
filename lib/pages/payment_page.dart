@@ -78,23 +78,27 @@ class PaymentPage extends StatelessWidget {
                     paymentAmount: paymentAmount,
                   ),
                   const SizedBox(height: MARGIN_MEDIUM_3),
-                  Builder(
-                    builder: (context) {
-                      return CardCarouselSectionView(
-                        userVo: userVo,
-                        cardChange: (cardVo) {
-                          // setState(() {
-                          //   this.cardVo = cardVo;
-                          // });
-                          PaymentBloc bloc = Provider.of<PaymentBloc>(context, listen: false);
-                          bloc.onChangeCard(cardVo);
-                        },
-                      );
-                    }
+                  Selector<PaymentBloc, UserVO?>(
+                    selector: (context, bloc) => bloc.userVo,
+                    builder: (context, userVo, child) {
+                      return Builder(builder: (context) {
+                        return CardCarouselSectionView(
+                          userVo: userVo,
+                          cardChange: (cardVo) {
+                            // setState(() {
+                            //   this.cardVo = cardVo;
+                            // });
+                            PaymentBloc bloc =
+                            Provider.of<PaymentBloc>(context, listen: false);
+                            bloc.onChangeCard(cardVo);
+                          },
+                        );
+                      });
+                    },
                   ),
                   const SizedBox(height: MARGIN_LARGE),
                   AddNewCardView(
-                        () => Navigator.push(
+                    () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => PaymentFormPage(
@@ -114,44 +118,73 @@ class PaymentPage extends StatelessWidget {
                       horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_2),
                   child: Selector<PaymentBloc, CardVO?>(
                     selector: (context, bloc) => bloc.cardVo,
-                    builder: (context, cardVo, child) =>
-                        CommonButtonView(
-                          "Purchase",
-                              () {
-                            // _movieModel
-                            //     .postCheckout(
-                            //     "Bearer ${userVo?.token}",
-                            //     paymentAmount,
-                            //     userVo,
-                            //     timeSlotVo,
-                            //     selectSeats,
-                            //     movieDate,
-                            //     movieId,
-                            //     cinemaVo,
-                            //     snackList,
-                            //     cardVo)
-                            //     .then((voucher) {
-                            //   // setState(() {
-                            //   voucherVo = voucher;
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => VoucherPage(
-                            //         movieId: widget.movieId,
-                            //         userVo: widget.userVo,
-                            //         cinemaVo: widget.cinemaVo,
-                            //         voucherVo: voucherVo,
-                            //       ),
-                            //     ),
-                            //   );
-                            //   // });
-                            // }).catchError((error) {
-                            //   debugPrint(error.toString());
-                            //   print(error);
-                            // });
-                                print("Chose Card VO is : ${cardVo?.id}.......");
-                          },
-                        ),
+                    builder: (context, cardVo, child) => CommonButtonView(
+                      "Purchase ${cardVo?.id}",
+                      () {
+                        // _movieModel
+                        //     .postCheckout(
+                        //     "Bearer ${userVo?.token}",
+                        //     paymentAmount,
+                        //     userVo,
+                        //     timeSlotVo,
+                        //     selectSeats,
+                        //     movieDate,
+                        //     movieId,
+                        //     cinemaVo,
+                        //     snackList,
+                        //     cardVo)
+                        //     .then((voucher) {
+                        //   // setState(() {
+                        //   voucherVo = voucher;
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => VoucherPage(
+                        //         movieId: widget.movieId,
+                        //         userVo: widget.userVo,
+                        //         cinemaVo: widget.cinemaVo,
+                        //         voucherVo: voucherVo,
+                        //       ),
+                        //     ),
+                        //   );
+                        //   // });
+                        // }).catchError((error) {
+                        //   debugPrint(error.toString());
+                        //   print(error);
+                        // });
+
+                        PaymentBloc bloc =
+                            Provider.of<PaymentBloc>(context, listen: false);
+                        bloc
+                            .onTapPurchase(
+                          userVo?.token ?? "",
+                          paymentAmount,
+                          userVo,
+                          timeSlotVo,
+                          selectSeats,
+                          movieDate,
+                          movieId,
+                          cinemaVo,
+                          snackList,
+                          cardVo,
+                        )
+                            .then((voucher) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VoucherPage(
+                                movieId: movieId,
+                                userVo: userVo,
+                                cinemaVo: cinemaVo,
+                                voucherVo: voucher,
+                              ),
+                            ),
+                          );
+                        }).catchError((error) {
+                          debugPrint(error.toString());
+                        });
+                      },
+                    ),
                   ),
                 ),
               ),

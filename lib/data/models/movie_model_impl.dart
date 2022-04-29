@@ -85,7 +85,7 @@ class MovieModelImpl extends MovieModel {
     //   return Future.value(movie);
     // });
     _dataAgent.getMovieDetails(movieId).then((movie) async {
-      if(isNowPlaying == true)
+      if (isNowPlaying == true)
         movie?.isNowPlaying = true;
       else
         movie?.isUpComing = true;
@@ -110,7 +110,8 @@ class MovieModelImpl extends MovieModel {
   @override
   Future<List<CinemaSeatVO>?> getCinemaSeats(
       String token, String timeSlotId, String bookingDate) {
-    return _dataAgent.getCinemaSeats(getBearerToken(token), timeSlotId, bookingDate);
+    return _dataAgent.getCinemaSeats(
+        getBearerToken(token), timeSlotId, bookingDate);
   }
 
   // @override
@@ -150,7 +151,7 @@ class MovieModelImpl extends MovieModel {
   @override
   Future<UserVO?> getProfile(String token) async {
     print("Token in get profile method is : $token......");
-    token = getBearerToken(token);
+    // token = getBearerToken(token);
     return _dataAgent.getProfile(token).then((userVo) async {
       userDao.deleteUser(userVo);
       userVo?.token = token.substring(7);
@@ -191,7 +192,7 @@ class MovieModelImpl extends MovieModel {
         [];
 
     return _dataAgent.postVoucher(
-        token,
+        getBearerToken(token),
         CheckoutRequest(
           timeSlotVo?.timeslotId ?? 0,
           selectedRows.toList().join(","),
@@ -233,7 +234,8 @@ class MovieModelImpl extends MovieModel {
   }
 
   @override
-  Stream<MovieVO?> getMovieDetailsFromDatabase(int movieId, {bool isNowPlaying = false}) {
+  Stream<MovieVO?> getMovieDetailsFromDatabase(int movieId,
+      {bool isNowPlaying = false}) {
     this.getMovieDetails(movieId, isNowPlaying);
     // return Future.value(mMovieDao.getMovieById(movieId));
     return mMovieDao
@@ -278,18 +280,21 @@ class MovieModelImpl extends MovieModel {
   @override
   Stream<UserVO?> getProfileFromDatabase(String token) {
     // UserVO? user;
-    getProfile(token).then((userVo) {
-
-    });
-
-    UserVO? user = userDao.getUserList().first;
-
-    print("User after calling get profile in Movie Model impl: $user......");
+    // this.getProfile(getBearerToken(token)).then((userVo) {
+    //   user = userVo;
+    // });
+    // return userDao
+    //     .getUserEventStream()
+    //     .startWith(userDao.getUserStream(userObj?.id ?? 0))
+    //     .map((event) {
+    //   return userDao.getUser(userObj?.id ?? 0);
+    // });
+    this.getProfile(getBearerToken(token));
     return userDao
         .getUserEventStream()
-        .startWith(userDao.getUserStream(user.id ?? 0))
+        .startWith(userDao.getUserStream(1))
         .map((event) {
-      return userDao.getUser(user.id ?? 0);
+      return userDao.getUser(1);
     });
   }
 }
