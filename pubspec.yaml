@@ -48,6 +48,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
   build_runner: ^2.1.7
   retrofit_generator: '>=3.0.0 <4.0.0'
   hive_generator: ^1.1.2

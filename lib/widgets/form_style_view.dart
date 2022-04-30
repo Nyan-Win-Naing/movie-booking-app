@@ -10,12 +10,15 @@ class FormStyleView extends StatelessWidget {
 
   final TextEditingController? textController;
 
+  final String keyName;
+
   FormStyleView(
     this.label,
     this.hintText, {
     this.isPasswordField = false,
     this.isNumber = false,
     this.textController,
+    this.keyName = "",
   });
 
   @override
@@ -32,6 +35,7 @@ class FormStyleView extends StatelessWidget {
         ),
         const SizedBox(height: MARGIN_MEDIUM),
         TextField(
+          key: Key(keyName),
           controller: textController,
           keyboardType: isNumber ? TextInputType.number : null,
           obscureText: isPasswordField,

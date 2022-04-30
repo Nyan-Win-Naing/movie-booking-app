@@ -6,8 +6,9 @@ class CommonButtonView extends StatelessWidget {
   final String btnLabel;
   final bool isOnBoardingPage;
   final Function onTapCommonButton;
+  final String keyName;
 
-  CommonButtonView(this.btnLabel, this.onTapCommonButton, {this.isOnBoardingPage = false});
+  CommonButtonView(this.btnLabel, this.onTapCommonButton, {this.isOnBoardingPage = false, this.keyName = ""});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class CommonButtonView extends StatelessWidget {
         onTapCommonButton();
       },
       child: Container(
+        key: Key(keyName),
         height: MARGIN_XXLARGE + 10,
         width: double.infinity,
         decoration: BoxDecoration(

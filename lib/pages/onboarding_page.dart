@@ -62,6 +62,7 @@ class OnBoardingPage extends StatelessWidget {
                   )
                 },
                 isOnBoardingPage: true,
+                keyName: "on-boarding-button-key",
               ),
             ),
             const SizedBox(height: MARGIN_MEDIUM_2),

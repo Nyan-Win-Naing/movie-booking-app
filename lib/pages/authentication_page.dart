@@ -74,24 +74,6 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                         email = emailTextController.text;
                         password = passwordTextController.text;
                         if (email != "" && password != "") {
-                          // userModel.postUserLogin(email, password).then((userVo) {
-                          //   if (userVo != null) {
-                          //     setState(() {
-                          //       this.userVo = userVo;
-                          //     });
-                          //     Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //             builder: (context) => HomePage(
-                          //                   userId: userVo.id ?? 0,
-                          //                 )));
-                          //   } else {
-                          //     showAlertDialog(
-                          //         context, "Please check your email or password!");
-                          //   }
-                          // }).catchError((error) {
-                          //   debugPrint(error.toString());
-                          // });
                           AuthenticationBloc bloc =
                               Provider.of(context, listen: false);
                           bloc.onTapLogin(email, password).then((userVo) {
@@ -122,24 +104,6 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                             phone.isNotEmpty) {
                           print(
                               "$name, $email, $phone, $password, $gToken, $fbToken");
-                          // userModel
-                          //     .postUserRegistration(
-                          //         name, email, phone, password, gToken, fbToken)
-                          //     .then((userVo) {
-                          //   if (userVo != null) {
-                          //     setState(() {
-                          //       this.userVo = userVo;
-                          //     });
-                          //     Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //             builder: (context) =>
-                          //                 HomePage(userId: userVo.id ?? 0)));
-                          //   }
-                          // }).catchError((error) {
-                          //   showAlertDialog(context,
-                          //       "This email or phone number is already exists.");
-                          // });
                           AuthenticationBloc bloc =
                               Provider.of(context, listen: false);
                           bloc
@@ -310,6 +274,7 @@ class AuthenticationFormView extends StatelessWidget {
           "Email",
           "Enter your email",
           textController: emailTextController?..text = email,
+          keyName: "email-field-key",
         ),
         const SizedBox(height: MARGIN_XXLARGE),
         FormStyleView(
@@ -317,6 +282,7 @@ class AuthenticationFormView extends StatelessWidget {
           "Enter password",
           textController: passwordTextController,
           isPasswordField: true,
+          keyName: "password-field-key",
         ),
         const SizedBox(height: MARGIN_MEDIUM_2),
         Visibility(
@@ -387,23 +353,6 @@ class AuthenticationButtonSectionView extends StatelessWidget {
                       await FacebookAuth.i.getUserData(fields: "name, email");
                   print(
                       "Facebook Log In User data ${userData["name"]}, ${userData["email"]}, ${userData["id"]}");
-                  // userModel
-                  //     .postUserLoginFacebook(userData["id"])
-                  //     .then((userVo) {
-                  //   if (userVo != null) {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) => HomePage(
-                  //           userId: userVo.id ?? 0,
-                  //         ),
-                  //       ),
-                  //     );
-                  //   }
-                  // }).catchError((error) {
-                  //   debugPrint(error.toString());
-                  //   showAlertDialog(context, "Facebook Login Fail!");
-                  // });
                   authBloc.onTapLoginWithFacebook(userData["id"]).then((user) {
                     if (user != null) {
                       Navigator.push(
@@ -459,22 +408,6 @@ class AuthenticationButtonSectionView extends StatelessWidget {
                     print(
                         "Google access token Login: ${authentication.accessToken}");
                     print("Google Account ID: ${googleAccount.id}");
-                    // userModel
-                    //     .postUserLoginGoogle(googleAccount.id)
-                    //     .then((userVo) {
-                    //   if (userVo != null) {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => HomePage(
-                    //           userId: userVo.id ?? 0,
-                    //         ),
-                    //       ),
-                    //     );
-                    //   } else {
-                    //     showAlertDialog(context, "Google LogIn Fail");
-                    //   }
-                    // });
                     authBloc
                         .onTapLoginWithGoogle(googleAccount.id)
                         .then((user) {
@@ -522,6 +455,7 @@ class AuthenticationButtonSectionView extends StatelessWidget {
             () {
               onTapConfirm();
             },
+
           ),
         ],
       ),
