@@ -19,10 +19,11 @@ import 'package:movie_booking_app/pages/voucher_page.dart';
 import 'package:movie_booking_app/resources/back_action.dart';
 import 'package:movie_booking_app/resources/colors.dart';
 import 'package:movie_booking_app/resources/dimens.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:movie_booking_app/resources/selected_card.dart';
 import 'package:movie_booking_app/resources/strings.dart';
 import 'package:movie_booking_app/widgets/common_button_view.dart';
+import 'package:movie_booking_app/widgets/galaxy_app_cards_view.dart';
+import 'package:movie_booking_app/widgets/movie_app_cards_view.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -80,24 +81,7 @@ class PaymentPage extends StatelessWidget {
                     paymentAmount: paymentAmount,
                   ),
                   const SizedBox(height: MARGIN_MEDIUM_3),
-                  Selector<PaymentBloc, UserVO?>(
-                    selector: (context, bloc) => bloc.userVo,
-                    builder: (context, userVo, child) {
-                      return Builder(builder: (context) {
-                        return CardCarouselSectionView(
-                          userVo: userVo,
-                          cardChange: (cardVo) {
-                            // setState(() {
-                            //   this.cardVo = cardVo;
-                            // });
-                            PaymentBloc bloc =
-                            Provider.of<PaymentBloc>(context, listen: false);
-                            bloc.onChangeCard(cardVo);
-                          },
-                        );
-                      });
-                    },
-                  ),
+                  PAYMENT_PAGE_CARDS_VIEWS[EnvironmentConfig.CONFIG_PAYMENT_CARD_VIEW] ?? Container(),
                   const SizedBox(height: MARGIN_LARGE),
                   AddNewCardView(
                     () => Navigator.push(
@@ -198,6 +182,8 @@ class PaymentPage extends StatelessWidget {
   }
 }
 
+
+
 class AddNewCardView extends StatelessWidget {
   final Function onTapAddNewCard;
 
@@ -230,190 +216,6 @@ class AddNewCardView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class CardCarouselSectionView extends StatefulWidget {
-  final UserVO? userVo;
-  final Function(CardVO) cardChange;
-
-  CardCarouselSectionView({required this.userVo, required this.cardChange});
-
-  @override
-  State<CardCarouselSectionView> createState() =>
-      _CardCarouselSectionViewState();
-}
-
-class _CardCarouselSectionViewState extends State<CardCarouselSectionView> {
-  int _carouselPageIndex = 0;
-
-  List<int> cardLastNumbers = [8014, 8015, 8016];
-
-  @override
-  Widget build(BuildContext context) {
-    UserVO? userVo = widget.userVo;
-    List<CardVO> cardList = userVo?.cards ?? [];
-    return Container(
-      height: MediaQuery.of(context).size.height / 3.5,
-      child: CarouselSlider(
-        options: CarouselOptions(
-          height: 210,
-          enlargeCenterPage: true,
-          onPageChanged: (index, reason) {
-            _carouselPageIndex = index;
-            widget.cardChange(cardList[index]);
-          },
-        ),
-        items: cardList.length != 0
-            ? cardList
-                .map((card) => Builder(
-                      builder: (BuildContext context) {
-                        return CardSectionView(
-                          cardVo: card,
-                          currentPageIndex: cardList.indexOf(card),
-                          cardIndex: _carouselPageIndex,
-                        );
-                      },
-                    ))
-                .toList()
-            : [],
-      ),
-    );
-  }
-}
-
-class CardSectionView extends StatelessWidget {
-  final int cardIndex;
-  final int currentPageIndex;
-
-  final CardVO? cardVo;
-
-  CardSectionView(
-      {required this.cardIndex,
-      required this.currentPageIndex,
-      required this.cardVo});
-
-  @override
-  Widget build(BuildContext context) {
-    // print("Card Index is $cardIndex");
-    // print("Current Page Index is $currentPageIndex");
-
-    if (cardIndex == currentPageIndex) {
-      print(cardVo?.id);
-    }
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(
-          horizontal: MARGIN_LARGE, vertical: MARGIN_MEDIUM_2),
-      decoration: BoxDecoration(
-        // color: cardIndex == currentPageIndex
-        //     ? CURRENT_PAYMENT_CARD_BACKGROUND_COLOR
-        //     : PAYMENT_CARD_BACKGROUND_COLOR,
-        color: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
-        borderRadius: BorderRadius.circular(MARGIN_MEDIUM),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          CardHeaderView(),
-          Text(
-            cardVo?.cardNumber ?? "",
-            style: const TextStyle(
-              fontSize: TEXT_BIG,
-              color: Colors.white,
-            ),
-          ),
-          CardBottomView(
-            cardVo: cardVo,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CardBottomView extends StatelessWidget {
-  final CardVO? cardVo;
-
-  CardBottomView({required this.cardVo});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CardInfoView(
-          infoTitle: "CARD HOLDER",
-          infoText: cardVo?.cardHolder ?? "",
-          crossAlign: CrossAxisAlignment.start,
-        ),
-        const Spacer(),
-        CardInfoView(
-          infoTitle: "EXPIRES",
-          infoText: cardVo?.expirationDate ?? "",
-          crossAlign: CrossAxisAlignment.end,
-        )
-      ],
-    );
-  }
-}
-
-class CardInfoView extends StatelessWidget {
-  final String infoTitle;
-  final String infoText;
-  final CrossAxisAlignment crossAlign;
-
-  CardInfoView({
-    required this.infoTitle,
-    required this.infoText,
-    required this.crossAlign,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: crossAlign,
-      children: [
-        Text(
-          infoTitle,
-          style: const TextStyle(
-            fontSize: TEXT_REGULAR_2X,
-            color: ON_BOARDING_WELCOME_APP_TEXT_COLOR,
-          ),
-        ),
-        SizedBox(height: MARGIN_MEDIUM),
-        Text(
-          infoText,
-          style: const TextStyle(
-            fontSize: TEXT_REGULAR_3X,
-            color: Colors.white,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class CardHeaderView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: const [
-        Text(
-          "Visa",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: TEXT_HEADING_1X,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Spacer(),
-        Icon(
-          Icons.more_horiz,
-          color: Colors.white,
-          size: MARGIN_LARGE,
-        ),
-      ],
     );
   }
 }

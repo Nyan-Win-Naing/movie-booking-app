@@ -28,7 +28,7 @@ class _MovieAppHomeScreenMovieViewState
         DefaultTabController(
           length: 2,
           child: TabBar(
-            unselectedLabelColor: MOVIE_APP_THEME_COLOR,
+            unselectedLabelColor: Color.fromRGBO(80, 87, 101, 1.0),
             labelColor: MOVIE_APP_SECONDARY_COLOR,
             indicator: const UnderlineTabIndicator(
               borderSide: BorderSide(
@@ -64,7 +64,7 @@ class _MovieAppHomeScreenMovieViewState
             },
           ),
         ),
-        const SizedBox(height: MARGIN_MEDIUM_3),
+        const SizedBox(height: MARGIN_LARGE),
         (tabBarIndex == 0)
             ? Selector<HomeBloc, List<MovieVO>>(
                 selector: (context, bloc) => bloc.getNowPlayingMovies ?? [],

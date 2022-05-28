@@ -17,18 +17,19 @@ class CardVOAdapter extends TypeAdapter<CardVO> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CardVO(
-      fields[0] as int?,
-      fields[1] as String?,
-      fields[2] as String?,
-      fields[3] as String?,
-      fields[4] as String?,
+      id: fields[0] as int?,
+      cardHolder: fields[1] as String?,
+      cardNumber: fields[2] as String?,
+      expirationDate: fields[3] as String?,
+      cardType: fields[4] as String?,
+      isSelected: fields[5] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CardVO obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class CardVOAdapter extends TypeAdapter<CardVO> {
       ..writeByte(3)
       ..write(obj.expirationDate)
       ..writeByte(4)
-      ..write(obj.cardType);
+      ..write(obj.cardType)
+      ..writeByte(5)
+      ..write(obj.isSelected);
   }
 
   @override
@@ -57,11 +60,12 @@ class CardVOAdapter extends TypeAdapter<CardVO> {
 // **************************************************************************
 
 CardVO _$CardVOFromJson(Map<String, dynamic> json) => CardVO(
-      json['id'] as int?,
-      json['card_holder'] as String?,
-      json['card_number'] as String?,
-      json['expiration_date'] as String?,
-      json['card_type'] as String?,
+      id: json['id'] as int?,
+      cardHolder: json['card_holder'] as String?,
+      cardNumber: json['card_number'] as String?,
+      expirationDate: json['expiration_date'] as String?,
+      cardType: json['card_type'] as String?,
+      isSelected: json['isSelected'] as bool?,
     );
 
 Map<String, dynamic> _$CardVOToJson(CardVO instance) => <String, dynamic>{
@@ -70,4 +74,5 @@ Map<String, dynamic> _$CardVOToJson(CardVO instance) => <String, dynamic>{
       'card_number': instance.cardNumber,
       'expiration_date': instance.expirationDate,
       'card_type': instance.cardType,
+      'isSelected': instance.isSelected,
     };

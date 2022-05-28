@@ -55,6 +55,22 @@ class PaymentBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  void onTapCard(CardVO cardVo) {
+    List<CardVO> cardList = userVo?.cards?.map((card) {
+      card.isSelected = false;
+      if(cardVo.id == card.id) {
+        cardVo.isSelected = true;
+        card = cardVo;
+      }
+      return card;
+    }).toList() ?? [];
+
+    this.userVo = UserVO(userVo?.id, userVo?.name, userVo?.email, userVo?.phoneNumber, userVo?.totalExpense, userVo?.profileImage, cardList);
+    notifyListeners();
+    this.cardVo = cardVo;
+    notifyListeners();
+  }
+
   Future<VoucherVO?> onTapPurchase(
     String token,
     int paymentAmount,

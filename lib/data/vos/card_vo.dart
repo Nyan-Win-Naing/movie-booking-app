@@ -27,13 +27,17 @@ class CardVO {
   @HiveField(4)
   String? cardType;
 
-  CardVO(
+  @HiveField(5)
+  bool? isSelected;
+
+  CardVO({
     this.id,
     this.cardHolder,
     this.cardNumber,
     this.expirationDate,
     this.cardType,
-  );
+    this.isSelected,
+  });
 
   factory CardVO.fromJson(Map<String, dynamic> json) => _$CardVOFromJson(json);
 
@@ -41,7 +45,7 @@ class CardVO {
 
   @override
   String toString() {
-    return 'CardVO{id: $id, cardHolder: $cardHolder, cardNumber: $cardNumber, expirationDate: $expirationDate, cardType: $cardType}';
+    return 'CardVO{id: $id, cardHolder: $cardHolder, cardNumber: $cardNumber, expirationDate: $expirationDate, cardType: $cardType,}';
   }
 
   @override

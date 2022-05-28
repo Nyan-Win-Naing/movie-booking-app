@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_booking_app/blocs/movie_details_bloc.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/actor_vo.dart';
@@ -13,6 +15,8 @@ import 'package:movie_booking_app/resources/dimens.dart';
 import 'package:movie_booking_app/resources/strings.dart';
 import 'package:movie_booking_app/viewitems/cast_view.dart';
 import 'package:movie_booking_app/widgets/common_button_view.dart';
+import 'package:movie_booking_app/widgets/galaxy_app_credits_view.dart';
+import 'package:movie_booking_app/widgets/movie_app_credits_view.dart';
 import 'package:movie_booking_app/widgets/rating_view.dart';
 import 'package:movie_booking_app/widgets/title_text.dart';
 import 'package:provider/provider.dart';
@@ -38,108 +42,67 @@ class MovieDetailsPage extends StatelessWidget {
       child: Scaffold(
         body: Selector<MovieDetailsBloc, MovieVO?>(
           selector: (context, bloc) => bloc.movieDetails,
-          builder: (context, movieDetails, child) =>
-              Container(
-                color: Colors.white,
-                child: Stack(
-                  children: [
-                    CustomScrollView(
-                      slivers: [
-                        MovieDetailsSliverAppBarView(
-                              () => Navigator.pop(context),
-                          movie: movieDetails,
-                        ),
-                        SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: MARGIN_MEDIUM_2),
-                                child: MovieTimeRatingAndGenreView(
-                                  movie: movieDetails,
-                                ),
-                              ),
-                              const SizedBox(height: MARGIN_MEDIUM_3),
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: MARGIN_MEDIUM_2),
-                                child: MoviePlotView(
-                                    plotSummary: movieDetails?.overview ?? ""),
-                              ),
-                              const SizedBox(height: MARGIN_MEDIUM_3),
-                              Selector<MovieDetailsBloc, List<ActorVO>>(
-                                selector: (context, bloc) => bloc.credits ?? [],
-                                builder: (context, credits, child) =>
-                                    Container(
-                                      child: CastSectionView(
-                                        credits: credits,
-                                      ),
-                                    ),
-                              ),
-                              const SizedBox(height: MARGIN_XXLARGE + 30),
-                            ],
-                          ),
-                        ),
-                      ],
+          builder: (context, movieDetails, child) => Container(
+            color: Colors.white,
+            child: Stack(
+              children: [
+                CustomScrollView(
+                  slivers: [
+                    MovieDetailsSliverAppBarView(
+                      () => Navigator.pop(context),
+                      movie: movieDetails,
                     ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_2),
-                        child: CommonButtonView(
-                          MOVIE_DETAILS_GET_TICKET_BUTTON_TEXT,
-                              () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MovieChooseTimePage(
-                                    userVo: userVo, movieId: movieId),
-                              ),
-                            );
-                          },
-                        ),
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: MARGIN_MEDIUM_2),
+                            child: MovieTimeRatingAndGenreView(
+                              movie: movieDetails,
+                            ),
+                          ),
+                          const SizedBox(height: MARGIN_MEDIUM_3),
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: MARGIN_MEDIUM_2),
+                            child: MoviePlotView(
+                                plotSummary: movieDetails?.overview ?? ""),
+                          ),
+                          const SizedBox(height: MARGIN_MEDIUM_3),
+                          DETAIL_PAGE_CREDITS_VIEWS[EnvironmentConfig
+                                  .CONFIG_DETAIL_PAGE_CREDITS_VIEW] ??
+                              Container(),
+                          const SizedBox(height: MARGIN_XXLARGE + 30),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-        ),
-      ),
-    );
-  }
-}
-
-
-class CastSectionView extends StatelessWidget {
-  final List<ActorVO> credits;
-
-  CastSectionView({required this.credits});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-          child: TitleText(MOVIE_DETAILS_CAST_TITLE_TEXT),
-        ),
-        const SizedBox(height: MARGIN_MEDIUM),
-        Container(
-          height: MOVIE_DETAILS_CAST_LIST_HEIGHT,
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_2),
-            scrollDirection: Axis.horizontal,
-            itemCount: credits.length,
-            itemBuilder: (BuildContext context, int index) {
-              return MovieDetailsCastView(
-                credit: credits[index],
-              );
-            },
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_2),
+                    child: CommonButtonView(
+                      MOVIE_DETAILS_GET_TICKET_BUTTON_TEXT,
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MovieChooseTimePage(
+                                userVo: userVo, movieId: movieId),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
