@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:movie_booking_app/blocs/authentication_bloc.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/data/models/user_model.dart';
 import 'package:movie_booking_app/data/models/user_model_impl.dart';
 import 'package:movie_booking_app/data/vos/user_vo.dart';
@@ -188,10 +190,10 @@ class _AuthenticationInfoViewState extends State<AuthenticationInfoView> {
           child: DefaultTabController(
             length: 2,
             child: TabBar(
-              indicatorColor: ON_BOARDING_BACKGROUND_COLOR,
+              indicatorColor: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
               indicatorWeight: 3.0,
               unselectedLabelColor: UNSELECTED_TAB_BAR_LABEL_COLOR,
-              labelColor: ON_BOARDING_BACKGROUND_COLOR,
+              labelColor: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
               tabs: const [
                 Tab(
                   child: Text(

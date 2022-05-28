@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/data/vos/cinema_seat_vo.dart';
 import 'package:movie_booking_app/data/vos/movie_seat_vo.dart';
 import 'package:movie_booking_app/resources/colors.dart';
@@ -42,7 +44,7 @@ Color _getSeatColor(CinemaSeatVO? movieSeat) {
   if (movieSeat?.type == "taken") {
     return MOVIE_SEAT_TAKEN_COLOR;
   } else if (movieSeat?.isSelected == true) {
-    return ON_BOARDING_BACKGROUND_COLOR;
+    return THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR] ?? Colors.white;
   } else if (movieSeat?.type == "available") {
     return MOVIE_SEAT_AVAILABLE_COLOR;
   } else {

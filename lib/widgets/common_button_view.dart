@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/resources/colors.dart';
 import 'package:movie_booking_app/resources/dimens.dart';
 
@@ -21,7 +23,7 @@ class CommonButtonView extends StatelessWidget {
         height: MARGIN_XXLARGE + 10,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: ON_BOARDING_BACKGROUND_COLOR,
+          color: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
           borderRadius: BorderRadius.circular(MARGIN_MEDIUM),
           border: isOnBoardingPage ? Border.all(
             color: SUBSCRIPTION_TEXT_COLOR,

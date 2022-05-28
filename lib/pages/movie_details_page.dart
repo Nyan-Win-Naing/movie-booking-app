@@ -32,6 +32,7 @@ class MovieDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("UserVO from MovieDetail is ${userVo}");
     return ChangeNotifierProvider(
       create: (context) => MovieDetailsBloc(movieId, userVo, isNowPlaying),
       child: Scaffold(

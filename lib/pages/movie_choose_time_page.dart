@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_booking_app/blocs/movie_choose_time_bloc.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/models/user_model.dart';
@@ -30,7 +32,7 @@ class MovieChooseTimePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: ON_BOARDING_BACKGROUND_COLOR,
+          backgroundColor: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
           leading: GestureDetector(
             onTap: () {
               backAction(context);
@@ -312,7 +314,7 @@ class TimeSlotItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(MARGIN_MEDIUM),
         border: Border.all(color: Colors.grey, width: 1),
         color: (timeSlots[index].isSelected ?? false)
-            ? ON_BOARDING_BACKGROUND_COLOR
+            ? THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR]
             : Colors.white,
       ),
       child: Center(
@@ -353,7 +355,7 @@ class _MovieChooseDateViewState extends State<MovieChooseDateView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ON_BOARDING_BACKGROUND_COLOR,
+      color: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
       height: MOVIE_TIME_DATE_LIST_HEIGHT,
       child: ListView.separated(
         separatorBuilder: (context, index) {
@@ -401,7 +403,8 @@ class DayAndDateView extends StatelessWidget {
           style: TextStyle(
             color: movieDate.isSelected
                 ? Colors.white
-                : Color.fromRGBO(174, 156, 244, 1.0),
+                // : Color.fromRGBO(174, 156, 244, 1.0),
+            : SECONDARY_THEME_AND_TEXT_COLORS[EnvironmentConfig.CONFIG_SECONDARY_COLOR],
             fontSize: TEXT_REGULAR_3X,
           ),
         ),
@@ -411,7 +414,8 @@ class DayAndDateView extends StatelessWidget {
           style: TextStyle(
             color: movieDate.isSelected
                 ? Colors.white
-                : Color.fromRGBO(174, 156, 244, 1.0),
+                // : Color.fromRGBO(174, 156, 244, 1.0),
+            : SECONDARY_THEME_AND_TEXT_COLORS[EnvironmentConfig.CONFIG_SECONDARY_COLOR],
             fontSize: TEXT_REGULAR_3X,
           ),
         ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_booking_app/blocs/movie_seats_bloc.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/cinema_seat_vo.dart';
@@ -306,7 +308,7 @@ class MovieSeatsGlosarySectionView extends StatelessWidget {
           Expanded(
             flex: 1,
             child: MovieSeatGlosaryView(
-              ON_BOARDING_BACKGROUND_COLOR,
+              THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR] ?? Colors.white,
               LABEL_YOUR_SELECTION,
             ),
           ),

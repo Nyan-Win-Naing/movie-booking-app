@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/pages/authentication_page.dart';
 import 'package:movie_booking_app/resources/colors.dart';
 import 'package:movie_booking_app/resources/dimens.dart';
@@ -10,7 +12,7 @@ class OnBoardingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: ON_BOARDING_BACKGROUND_COLOR,
+        color: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -22,7 +24,7 @@ class OnBoardingPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      "assets/onboarding_image.png",
+                      "assets/${ON_BOARDING_IMAGES[EnvironmentConfig.CONFIG_ONBOARDING_IMAGE]}",
                       width: MediaQuery.of(context).size.width * 1.8 / 2,
                     ),
                     const SizedBox(
@@ -37,8 +39,8 @@ class OnBoardingPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: MARGIN_MEDIUM),
-                    const Text(
-                      ON_BOARDING_WELCOME_TEXT,
+                    Text(
+                      APP_TITLES[EnvironmentConfig.CONFIG_APP_TITLE] ?? "",
                       style: TextStyle(
                         color: ON_BOARDING_WELCOME_APP_TEXT_COLOR,
                         fontSize: TEXT_REGULAR_2X,

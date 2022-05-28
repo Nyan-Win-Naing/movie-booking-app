@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:movie_booking_app/blocs/snack_bloc.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/cinema_seat_vo.dart';
@@ -112,16 +114,16 @@ class SnackPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: MARGIN_MEDIUM_2, vertical: MARGIN_MEDIUM_2),
-                  child: Selector<SnackBloc,
-                      int>(
+                  child: Selector<SnackBloc, int>(
                       selector: (context, bloc) => bloc.price,
                       builder: (context, price, child) {
                         return CommonButtonView(
                           "Pay \$${price}",
-                              () {
-                            SnackBloc bloc = Provider.of<SnackBloc>(context,
-                                listen: false);
-                            List<SnackVO> selectedSnacks = bloc.getAllSelectedSnacks();
+                          () {
+                            SnackBloc bloc =
+                                Provider.of<SnackBloc>(context, listen: false);
+                            List<SnackVO> selectedSnacks =
+                                bloc.getAllSelectedSnacks();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -396,7 +398,9 @@ class _PaymentMethodSectionViewState extends State<PaymentMethodSectionView> {
                     Icons.credit_score_outlined,
                     color: currentMethod.isSelected == false
                         ? Color.fromRGBO(128, 145, 178, 1.0)
-                        : ON_BOARDING_BACKGROUND_COLOR,
+                        // : ON_BOARDING_BACKGROUND_COLOR,
+                        : SECONDARY_THEME_AND_TEXT_COLORS[
+                            EnvironmentConfig.CONFIG_SECONDARY_COLOR],
                     size: MARGIN_LARGE,
                   ),
                   paymentMethod: currentMethod,
@@ -433,7 +437,9 @@ class EachPaymentMethod extends StatelessWidget {
                   fontSize: TEXT_REGULAR_3X,
                   color: paymentMethod.isSelected == false
                       ? Colors.black87
-                      : ON_BOARDING_BACKGROUND_COLOR,
+                      // : ON_BOARDING_BACKGROUND_COLOR,
+                      : SECONDARY_THEME_AND_TEXT_COLORS[
+                          EnvironmentConfig.CONFIG_SECONDARY_COLOR],
                 ),
               ),
               const SizedBox(height: MARGIN_MEDIUM),
@@ -443,7 +449,9 @@ class EachPaymentMethod extends StatelessWidget {
                   fontSize: TEXT_REGULAR_2X,
                   color: paymentMethod.isSelected == false
                       ? SUBSCRIPTION_TEXT_COLOR
-                      : Color.fromRGBO(98, 62, 234, 0.7),
+                      // : Color.fromRGBO(98, 62, 234, 0.7),
+                      : SECONDARY_THEME_AND_TEXT_COLORS[
+                          EnvironmentConfig.CONFIG_SECONDARY_COLOR],
                 ),
               ),
             ],

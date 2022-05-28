@@ -1,5 +1,6 @@
 const WELCOME_TITLE = "Welcome!";
-const ON_BOARDING_WELCOME_TEXT = "Hello! Welcome to Galaxy App.";
+const ON_BOARDING_WELCOME_GALAXY_TEXT = "Hello! Welcome to Galaxy App.";
+const ON_BOARDING_WELCOME_MOVIE_TEXT = "Hello! Welcome to Movie App.";
 const ON_BOARDING_GET_STARTED_BUTTON_TEXT = "Get Started";
 const AUTHENTICATION_LOGTIN_TITLE_TEXT = "Welcome back, login to continue";
 const LOG_IN_TEXT = "Login";

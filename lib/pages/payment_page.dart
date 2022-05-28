@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_booking_app/blocs/payment_bloc.dart';
+import 'package:movie_booking_app/config/config_values.dart';
+import 'package:movie_booking_app/config/environment_config.dart';
 import 'package:movie_booking_app/data/models/movie_model.dart';
 import 'package:movie_booking_app/data/models/movie_model_impl.dart';
 import 'package:movie_booking_app/data/vos/card_vo.dart';
@@ -308,7 +310,7 @@ class CardSectionView extends StatelessWidget {
         // color: cardIndex == currentPageIndex
         //     ? CURRENT_PAYMENT_CARD_BACKGROUND_COLOR
         //     : PAYMENT_CARD_BACKGROUND_COLOR,
-        color: CURRENT_PAYMENT_CARD_BACKGROUND_COLOR,
+        color: THEME_COLORS[EnvironmentConfig.CONFIG_THEME_COLOR],
         borderRadius: BorderRadius.circular(MARGIN_MEDIUM),
       ),
       child: Column(
