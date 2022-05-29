@@ -70,9 +70,11 @@ class MovieDetailsPage extends StatelessWidget {
                                 plotSummary: movieDetails?.overview ?? ""),
                           ),
                           const SizedBox(height: MARGIN_MEDIUM_3),
-                          DETAIL_PAGE_CREDITS_VIEWS[EnvironmentConfig
-                                  .CONFIG_DETAIL_PAGE_CREDITS_VIEW] ??
-                              Container(),
+                          (DETAIL_PAGE_CREDITS_VIEWS[EnvironmentConfig
+                                      .CONFIG_DETAIL_PAGE_CREDITS_VIEW] ==
+                                  "MOVIE_CREDITS_VIEW_GALAXY_APP")
+                              ? GalaxyAppCreditsView()
+                              : MovieAppCreditsView(),
                           const SizedBox(height: MARGIN_XXLARGE + 30),
                         ],
                       ),

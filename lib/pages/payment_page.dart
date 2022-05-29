@@ -81,7 +81,11 @@ class PaymentPage extends StatelessWidget {
                     paymentAmount: paymentAmount,
                   ),
                   const SizedBox(height: MARGIN_MEDIUM_3),
-                  PAYMENT_PAGE_CARDS_VIEWS[EnvironmentConfig.CONFIG_PAYMENT_CARD_VIEW] ?? Container(),
+                  (PAYMENT_PAGE_CARDS_VIEWS[
+                              EnvironmentConfig.CONFIG_PAYMENT_CARD_VIEW] ==
+                          "PAYMENT_CARDS_VIEW_GALAXY_APP")
+                      ? GalaxyAppCardsView()
+                      : MovieAppCardsView(),
                   const SizedBox(height: MARGIN_LARGE),
                   AddNewCardView(
                     () => Navigator.push(
@@ -181,8 +185,6 @@ class PaymentPage extends StatelessWidget {
     );
   }
 }
-
-
 
 class AddNewCardView extends StatelessWidget {
   final Function onTapAddNewCard;

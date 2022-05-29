@@ -191,11 +191,10 @@ class HomePage extends StatelessWidget {
               children: [
                 Selector<HomeBloc, UserVO?>(
                   selector: (context, bloc) => bloc.userVo,
-                  builder: (context, user, child) =>
-                      HiSectionView(
-                        avatarRadius: avatarRadius,
-                        uName: user?.name ?? "",
-                      ),
+                  builder: (context, user, child) => HiSectionView(
+                    avatarRadius: avatarRadius,
+                    uName: user?.name ?? "",
+                  ),
                 ),
                 const SizedBox(height: MARGIN_CARD_MEDIUM_2),
                 // Column(
@@ -232,7 +231,11 @@ class HomePage extends StatelessWidget {
                 //     ),
                 //   ],
                 // ),
-                HOME_PAGE_MOVIES_VIEWS[EnvironmentConfig.CONFIG_HOME_PAGE_MOVIES_VIEW] ?? Container(),
+                (HOME_PAGE_MOVIES_VIEWS[
+                            EnvironmentConfig.CONFIG_HOME_PAGE_MOVIES_VIEW] ==
+                        "HOME_PAGE_MOVIES_VIEW_GALAXY_APP")
+                    ? GalaxyAppHomeScreenMoviesView()
+                    : MovieAppHomeScreenMovieView(),
               ],
             ),
           ),

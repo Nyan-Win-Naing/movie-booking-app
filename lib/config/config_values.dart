@@ -33,19 +33,25 @@ const Map<String, String> ON_BOARDING_IMAGES = {
 };
 
 /// Home Page Movies View
-const Map<String, Widget> HOME_PAGE_MOVIES_VIEWS = {
-  "HOME_PAGE_MOVIES_VIEW_GALAXY_APP" : GalaxyAppHomeScreenMoviesView(),
-  "HOME_PAGE_MOVIES_VIEW_MOVIE_APP" : MovieAppHomeScreenMovieView(),
+const Map<String, String> HOME_PAGE_MOVIES_VIEWS = {
+  // "HOME_PAGE_MOVIES_VIEW_GALAXY_APP" : GalaxyAppHomeScreenMoviesView(),
+  // "HOME_PAGE_MOVIES_VIEW_MOVIE_APP" : MovieAppHomeScreenMovieView(),
+  "HOME_PAGE_MOVIES_VIEW_GALAXY_APP" : "HOME_PAGE_MOVIES_VIEW_GALAXY_APP",
+  "HOME_PAGE_MOVIES_VIEW_MOVIE_APP" : "HOME_PAGE_MOVIES_VIEW_MOVIE_APP",
 };
 
 /// Detail Page Credits View
-const Map<String, Widget> DETAIL_PAGE_CREDITS_VIEWS = {
-  "MOVIE_CREDITS_VIEW_GALAXY_APP" : GalaxyAppCreditsView(),
-  "MOVIE_CREDITS_VIEW_MOVIE_APP" : MovieAppCreditsView(),
+const Map<String, String> DETAIL_PAGE_CREDITS_VIEWS = {
+  // "MOVIE_CREDITS_VIEW_GALAXY_APP" : GalaxyAppCreditsView(),
+  // "MOVIE_CREDITS_VIEW_MOVIE_APP" : MovieAppCreditsView(),
+  "MOVIE_CREDITS_VIEW_GALAXY_APP" : "MOVIE_CREDITS_VIEW_GALAXY_APP",
+  "MOVIE_CREDITS_VIEW_MOVIE_APP" : "MOVIE_CREDITS_VIEW_MOVIE_APP",
 };
 
 /// Payment Card Page View
-const Map<String, Widget> PAYMENT_PAGE_CARDS_VIEWS = {
-  "PAYMENT_CARDS_VIEW_GALAXY_APP" : GalaxyAppCardsView(),
-  "PAYMENT_CARDS_VIEW_MOVIE_APP" : MovieAppCardsView(),
+const Map<String, String> PAYMENT_PAGE_CARDS_VIEWS = {
+  // "PAYMENT_CARDS_VIEW_GALAXY_APP" : GalaxyAppCardsView(),
+  // "PAYMENT_CARDS_VIEW_MOVIE_APP" : MovieAppCardsView(),
+  "PAYMENT_CARDS_VIEW_GALAXY_APP" : "PAYMENT_CARDS_VIEW_GALAXY_APP",
+  "PAYMENT_CARDS_VIEW_MOVIE_APP" : "PAYMENT_CARDS_VIEW_MOVIE_APP",
 };
